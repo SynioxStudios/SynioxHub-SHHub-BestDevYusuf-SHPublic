@@ -14,8 +14,6 @@ local tab1 = window:AddTab("Main") -- Name of the Tab
 tab1:Show() -- Shows the tab first when executing
 
 tab1:AddButton("Auto Weight",function()
-
-AutoFarm:AddLabel("Op Farm")
-
-end)-- Code here
+-- End Code Here
+end)
 end)
