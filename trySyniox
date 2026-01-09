@@ -42,14 +42,15 @@ local function manageTool(toolName)
     task.spawn(function()
         while _G[toolName.."On"] do
             local player = game.Players.LocalPlayer
-            local character = player.Character
-            local tool = player.Backpack:FindFirstChild(toolName) or (character and character:FindFirstChild(toolName))
+            local tool = player.Backpack:FindFirstChild(toolName) or (player.Character and player.Character:FindFirstChild(toolName))
             
             if tool then
-                if tool.Parent ~= character then
-                    tool.Parent = character
+                local event = tool:FindFirstChildOfClass("RemoteEvent")
+                if event then
+                    event:FireServer()
+                else
+                    tool:Activate()
                 end
-                tool:Activate()
             end
             task.wait(0.1)
         end
