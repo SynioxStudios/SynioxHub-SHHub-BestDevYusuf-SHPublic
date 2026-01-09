@@ -15,7 +15,7 @@ local window = library:AddWindow("Syniox Public | Muscle Legends | V1 || HELLO -
     }, 
     background_transparency = 0.1, 
     main_color = Color3.fromRGB(160, 0, 0), 
-    min_size = Vector2.new(500, 600), 
+    min_size = Vector2.new(450, 450), 
     can_resize = true 
 })
 
@@ -52,14 +52,17 @@ local function manageTool(toolName)
                 
                 local humanoid = character:FindFirstChildOfClass("Humanoid")
                 if humanoid then
-                    for _, anim in pairs(humanoid:GetPlayingAnimationTracks()) do
-                        anim:Stop()
+                    local animator = humanoid:FindFirstChildOfClass("Animator")
+                    if animator then
+                        for _, track in pairs(animator:GetPlayingAnimationTracks()) do
+                            track:Stop()
+                        end
                     end
                 end
 
                 tool:Activate()
             end
-            task.wait(0.05)
+            task.wait(0.01)
         end
     end)
 end
