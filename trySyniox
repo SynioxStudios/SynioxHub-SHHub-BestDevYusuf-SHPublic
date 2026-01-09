@@ -50,8 +50,6 @@ local function manageTool(toolName, remoteArg)
     end)
 end
 
-local folder1 = AutoFarm:AddFolder("Tools")
-
 local function manageTool(toolName, remoteArg)
     task.spawn(function()
         while _G[toolName.."On"] do
