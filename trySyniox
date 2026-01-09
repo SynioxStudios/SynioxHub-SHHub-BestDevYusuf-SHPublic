@@ -1,18 +1,26 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/SynioxStudios/ByYusufGui-Syniox/refs/heads/main/SynioxGui.lua%20(3).txt", true))()
 
 local window = library:AddWindow("Syniox Try", {
-    -- Başlık Çubuğu: Siyahtan açık siyaha doğru (Modern görünüm)
-    title_bar = {Color3.fromRGB(0, 0, 0), Color3.fromRGB(30, 30, 30), Color3.fromRGB(60, 60, 60)}, 
-    title_bar_transparency = 0.2, 
+    -- Başlık Çubuğu: Canlı kırmızıdan başlayıp derin siyaha süzülür
+    title_bar = {
+        Color3.fromRGB(160, 0, 0), -- Üst: Belirgin Kırmızı
+        Color3.fromRGB(40, 0, 0),  -- Orta: Koyu Kırmızı (Geçiş noktası)
+        Color3.fromRGB(0, 0, 0)    -- Alt: Tam Siyah
+    }, 
+    title_bar_transparency = 0.1, 
 
-    -- Arka Plan: Tamamen siyah ve hafif şeffaf (Daha asil durur)
-    background = {Color3.fromRGB(0, 0, 0), Color3.fromRGB(15, 15, 15), Color3.fromRGB(25, 25, 25)}, 
+    -- Arka Plan: Tamamen siyah ve hafif şeffaf (Asil ve profesyonel durur)
+    background = {
+        Color3.fromRGB(0, 0, 0), 
+        Color3.fromRGB(10, 10, 10), 
+        Color3.fromRGB(20, 20, 20)
+    }, 
     background_transparency = 0.1, 
 
-    -- Ana Vurgu Rengi: Senin o sevdiğin Petrol Mavisi (Butonlarda ve detaylarda görünür)
-    main_color = Color3.fromRGB(41, 74, 122), 
+    -- Ana Vurgu Rengi: Seçili butonlar ve detaylar artık Petrol Mavisi değil, Kırmızı!
+    main_color = Color3.fromRGB(160, 0, 0), 
 
-    min_size = Vector2.new(400, 300), 
+    min_size = Vector2.new(500, 600), 
     can_resize = true 
 })
 
