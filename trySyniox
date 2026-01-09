@@ -38,46 +38,40 @@ end)
 
 local folder1 = AutoFarm:AddFolder("Tools")
 
-local function manageTool(toolName, remoteArg)
+local function manageAutoFarm(toolName, isEnabled)
     task.spawn(function()
-        while _G[toolName.."On"] do
-            local event = game:GetService("Players").LocalPlayer:FindFirstChild("muscleEvent")
-            if event then
-                event:FireServer(remoteArg)
+        while isEnabled do
+            local player = game.Players.LocalPlayer
+            local character = player.Character
+            local backpack = player:FindFirstChild("Backpack")
+            
+            if backpack and character then
+                local tool = backpack:FindFirstChild(toolName)
+                if tool then
+                    tool.Parent = character
+                end
             end
             task.wait(0.1)
         end
     end)
 end
 
-local function manageTool(toolName, remoteArg)
-    task.spawn(function()
-        while _G[toolName.."On"] do
-            local event = game:GetService("Players").LocalPlayer:FindFirstChild("muscleEvent")
-            if event then
-                event:FireServer(remoteArg)
-            end
-            task.wait(0.01)
-        end
-    end)
-end
-
 folder1:AddSwitch("Weight", function(bool)
-    _G.WeightOn = bool
-    if bool then manageTool("Weight", "rep") end
+    weightOn = bool
+    manageAutoFarm("Weight", weightOn)
 end)
 
 folder1:AddSwitch("Pushups", function(bool)
-    _G.PushupsOn = bool
-    if bool then manageTool("Pushups", "pushups") end
+    pushupsOn = bool
+    manageAutoFarm("Pushups", pushupsOn)
 end)
 
 folder1:AddSwitch("Handstand", function(bool)
-    _G.HandstandOn = bool
-    if bool then manageTool("Handstand", "handstand") end
+    handstandOn = bool
+    manageAutoFarm("Handstand", handstandOn)
 end)
 
 folder1:AddSwitch("Situps", function(bool)
-    _G.SitupsOn = bool
-    if bool then manageTool("Situps", "situps") end
+    situpsOn = bool
+    manageAutoFarm("Situps", situpsOn)
 end)
