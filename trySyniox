@@ -98,7 +98,6 @@ local Locations = {
 
 local selectedLocation = "Jungle Treadmill"
 local posLockConnection
-local lockPosEnabled = false
 
 local function lockPlayerPosition(cframe)
     if posLockConnection then posLockConnection:Disconnect() end
@@ -109,6 +108,7 @@ local function lockPlayerPosition(cframe)
     end)
 end
 
+-- Yazıların görünmesi için liste tanımlamasını Dropdown içinde doğrudan yapıyoruz
 AutoFarm:AddDropdown("Select Location", {
     Values = {"Jungle Treadmill", "Mythical Gym", "Legends Gym", "Spawn", "Starter Treadmill"},
     Default = "Jungle Treadmill",
@@ -118,7 +118,6 @@ AutoFarm:AddDropdown("Select Location", {
 })
 
 AutoFarm:AddSwitch("Auto Farm", function(bool)
-    lockPosEnabled = bool
     if bool then
         local targetPos = Locations[selectedLocation]
         local hrp = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
