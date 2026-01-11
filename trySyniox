@@ -98,9 +98,6 @@ local Yerler = {
 
 local seciliYer = "Ana Alan"
 
-local AutoFarm = window:AddTab("Farm")
-AutoFarm:AddLabel("Op Farm")
-
 AutoFarm:AddDropdown("Yer Seçimi", {
     Values = {"Ana Alan", "Koşma Makinesi", "Yüksek Bölge", "Orman Sandığı", "Pembe Alan"},
     Default = "Ana Alan",
