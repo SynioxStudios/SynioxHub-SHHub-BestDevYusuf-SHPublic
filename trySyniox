@@ -1607,7 +1607,7 @@ Misc:AddSwitch("Anti Afk", function(Value)
 end)
 
 local AutoTradeTab = window:AddTab("Auto Trade")
-AutoTradeTab:AddLabel("Advanced Trade System 31")
+AutoTradeTab:AddLabel("hi")
 
 local SelectPlayerName = ""
 local selectedPet = "Blue Birdie"
