@@ -1614,26 +1614,31 @@ local selectedPet = "Blue Birdie"
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- 1. Optimized Player Selection (Dynamic & Line-by-Line)
+-- 1. Player Dropdown (Same logic as your Stats tab)
 local PlayerDrop = AutoTradeTab:AddDropdown("Select Player", function(Value)
-    SelectPlayerName = Value:match("| (.+)") or Value
+    SelectPlayerName = Value:match("| (.+)")
 end)
 
 local function UpdatePlayerList()
     PlayerDrop:Clear()
-    for _, Plr in ipairs(Players:GetPlayers()) do
+    local Playerslist = {}
+    for _, Plr in pairs(Players:GetPlayers()) do
         if Plr ~= LocalPlayer then
-            local pDisplay = Plr.DisplayName .. " | " .. Plr.Name
-            PlayerDrop:Add(pDisplay)
+            local displayName = Plr.DisplayName .. " | " .. Plr.Name
+            table.insert(Playerslist, displayName)
         end
+    end
+    for _, AddPlr in ipairs(Playerslist) do
+        PlayerDrop:Add(AddPlr) -- Adding line by line exactly like Stats
     end
 end
 
+-- Refresh list on join/leave
 UpdatePlayerList()
 Players.PlayerAdded:Connect(UpdatePlayerList)
 Players.PlayerRemoving:Connect(UpdatePlayerList)
 
--- 2. Alphabetical Pet Selection (Line-by-Line)
+-- 2. Pet Dropdown (Line-by-Line)
 local petDropdown = AutoTradeTab:AddDropdown("Select Pet", function(text)
     selectedPet = text
 end)
@@ -1675,7 +1680,7 @@ petDropdown:Add("White Pegasus")
 petDropdown:Add("White Pheonix")
 petDropdown:Add("Yellow Butterfly")
 
--- 3. Trade Switch (0.05 Speed Execution)
+-- 3. Auto Trade Switch (0.05 Speed)
 _G.AutoTradeActive = false
 AutoTradeTab:AddSwitch("Start Auto Trade & Accept", function(state)
     _G.AutoTradeActive = state
@@ -1686,7 +1691,7 @@ AutoTradeTab:AddSwitch("Start Auto Trade & Accept", function(state)
                 if target then
                     local event = LocalPlayer:FindFirstChild("muscleEvent")
                     if event then
-                        -- Fast processing with 0.05s delay
+                        -- High speed processing (0.05)
                         event:FireServer("tradeRequest", target)
                         task.wait(0.05)
                         event:FireServer("addPet", selectedPet)
