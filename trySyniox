@@ -90,11 +90,11 @@ local RunService = game:GetService("RunService")
 local Player = Players.LocalPlayer
 
 local Locations = {
-    {name = "Jungle Treadmill", pos = Vector3.new(-8131.86, 25.77, 2818.17)},
-    {name = "Mythical Treadmill", pos = Vector3.new(2661.67, 19.41, 932.09)},
-    {name = "Legends Treadmill", pos = Vector3.new(4365.82, 997.14, -3632.9)},
-    {name = "Spawn", pos = Vector3.new(-230.43, 8.16, -102.18)},
-    {name = "Tiny Treadmill", pos = Vector3.new(55.64, 5.16, 1947.60)}
+    {name = "Jungle Treadmill +8 xp", pos = Vector3.new(-8131.86, 25.77, 2818.17)},
+    {name = "Legends Treadmill +7 xp", pos = Vector3.new(4365.82, 997.14, -3632.9)},
+    {name = "Mythical Treadmill +6 xp", pos = Vector3.new(2661.67, 19.41, 932.09)},
+    {name = "Spawn Treadmill +5 xp", pos = Vector3.new(-230.43, 8.16, -102.18)},
+    {name = "Tiny Treadmill +1 xp", pos = Vector3.new(55.64, 5.16, 1947.60)}
 }
 
 local posLockConnection = nil
