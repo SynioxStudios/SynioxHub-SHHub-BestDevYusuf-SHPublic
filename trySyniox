@@ -1607,34 +1607,33 @@ Misc:AddSwitch("Anti Afk", function(Value)
 end)
 
 local AutoTradeTab = window:AddTab("Auto Trade")
-AutoTradeTab:AddLabel("hi")
+AutoTradeTab:AddLabel("Advanced Trade System")
 
 local SelectPlayerName = ""
 local selectedPet = "Blue Birdie"
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- 1. Optimized Player Dropdown (Adding each player line by line)
+-- 1. Optimized Player Selection (Dynamic & Line-by-Line)
 local PlayerDrop = AutoTradeTab:AddDropdown("Select Player", function(Value)
     SelectPlayerName = Value:match("| (.+)") or Value
 end)
 
 local function UpdatePlayerList()
-    PlayerDrop:Clear() -- Clear the list first to avoid duplicates
+    PlayerDrop:Clear()
     for _, Plr in ipairs(Players:GetPlayers()) do
         if Plr ~= LocalPlayer then
-            local displayName = Plr.DisplayName .. " | " .. Plr.Name
-            PlayerDrop:Add(displayName) -- Adding each player one by one
+            local pDisplay = Plr.DisplayName .. " | " .. Plr.Name
+            PlayerDrop:Add(pDisplay)
         end
     end
 end
 
--- Track players joining/leaving to keep the list fresh
 UpdatePlayerList()
 Players.PlayerAdded:Connect(UpdatePlayerList)
 Players.PlayerRemoving:Connect(UpdatePlayerList)
 
--- 2. Alphabetical Pet Dropdown (Every pet on its own line)
+-- 2. Alphabetical Pet Selection (Line-by-Line)
 local petDropdown = AutoTradeTab:AddDropdown("Select Pet", function(text)
     selectedPet = text
 end)
@@ -1676,22 +1675,24 @@ petDropdown:Add("White Pegasus")
 petDropdown:Add("White Pheonix")
 petDropdown:Add("Yellow Butterfly")
 
--- 3. The Linked Switch (Controls both choices with 0.05 speed)
+-- 3. Trade Switch (0.05 Speed Execution)
 _G.AutoTradeActive = false
 AutoTradeTab:AddSwitch("Start Auto Trade & Accept", function(state)
     _G.AutoTradeActive = state
     task.spawn(function()
         while _G.AutoTradeActive do
-            local target = Players:FindFirstChild(SelectPlayerName)
-            if target and selectedPet ~= "" then
-                local event = LocalPlayer:FindFirstChild("muscleEvent")
-                if event then
-                    -- High-speed server requests (0.05s)
-                    event:FireServer("tradeRequest", target)
-                    task.wait(0.05)
-                    event:FireServer("addPet", selectedPet)
-                    task.wait(0.05)
-                    event:FireServer("acceptTrade")
+            if SelectPlayerName ~= "" and selectedPet ~= "" then
+                local target = Players:FindFirstChild(SelectPlayerName)
+                if target then
+                    local event = LocalPlayer:FindFirstChild("muscleEvent")
+                    if event then
+                        -- Fast processing with 0.05s delay
+                        event:FireServer("tradeRequest", target)
+                        task.wait(0.05)
+                        event:FireServer("addPet", selectedPet)
+                        task.wait(0.05)
+                        event:FireServer("acceptTrade")
+                    end
                 end
             end
             task.wait(0.5)
