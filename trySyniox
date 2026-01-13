@@ -94,7 +94,7 @@ local Locations = {
     ["Mythical Treadmill"] = Vector3.new(2661.67, 19.41, 932.09),
     ["Legends Treadmill"] = Vector3.new(4365.82, 997.14, -3632.9),
     ["Spawn"] = Vector3.new(-230.43, 8.16, -102.18),
-    ["Starter Treadmill"] = Vector3.new(55.64, 5.16, 1947.60)
+    ["Tiny Treadmill"] = Vector3.new(55.64, 5.16, 1947.60)
 }
 
 local posLockConnection = nil
