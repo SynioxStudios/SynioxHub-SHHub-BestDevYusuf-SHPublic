@@ -90,11 +90,11 @@ local RunService = game:GetService("RunService")
 local Player = Players.LocalPlayer
 
 local Locations = {
-    ["Jungle Treadmill"] = Vector3.new(-8131.86, 25.77, 2818.17),
-    ["Mythical Treadmill"] = Vector3.new(2661.67, 19.41, 932.09),
-    ["Legends Treadmill"] = Vector3.new(4365.82, 997.14, -3632.9),
-    ["Spawn"] = Vector3.new(-230.43, 8.16, -102.18),
-    ["Tiny Treadmill"] = Vector3.new(55.64, 5.16, 1947.60)
+    {name = "Jungle Treadmill", pos = Vector3.new(-8131.86, 25.77, 2818.17)},
+    {name = "Mythical Treadmill", pos = Vector3.new(2661.67, 19.41, 932.09)},
+    {name = "Legends Treadmill", pos = Vector3.new(4365.82, 997.14, -3632.9)},
+    {name = "Spawn", pos = Vector3.new(-230.43, 8.16, -102.18)},
+    {name = "Tiny Treadmill", pos = Vector3.new(55.64, 5.16, 1947.60)}
 }
 
 local posLockConnection = nil
@@ -119,12 +119,12 @@ end
 
 local FarmFolder = AutoFarm:AddFolder("Treadmill")
 
-for name, pos in pairs(Locations) do
-    FarmFolder:AddSwitch(name, function(bool)
+for _, loc in ipairs(Locations) do
+    FarmFolder:AddSwitch(loc.name, function(bool)
         if bool then
             local hrp = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
             if hrp then
-                hrp.CFrame = CFrame.new(pos + Vector3.new(0, 3, 0))
+                hrp.CFrame = CFrame.new(loc.pos + Vector3.new(0, 3, 0))
                 task.wait(0.3)
                 lockAndSimulate(hrp.CFrame)
             end
