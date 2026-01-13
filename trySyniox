@@ -1506,3 +1506,102 @@ Rock:AddSwitch("Jungle Rock 10M", function(Value)
         end
     end)
 end)
+
+local Misc = window:AddTab("Misc")
+
+Misc:AddSwitch("Anti Afk", function(Value)
+    if Value then
+        _G.AntiAfkActive = true
+        
+        local vu = game:GetService("VirtualUser")
+        antiAfkConnection = game:GetService("Players").LocalPlayer.Idled:Connect(function()
+            if _G.AntiAfkActive then
+                vu:CaptureController()
+                vu:ClickButton2(Vector2.new())
+            end
+        end)
+
+        local ScreenGui = Instance.new("ScreenGui")
+        local MainFrame = Instance.new("Frame")
+        local UICorner = Instance.new("UICorner")
+        local Title = Instance.new("TextLabel")
+        local Separator = Instance.new("Frame")
+        local TimerLabel = Instance.new("TextLabel")
+        local FPSLabel = Instance.new("TextLabel")
+        local MSLabel = Instance.new("TextLabel")
+        local UIStroke = Instance.new("UIStroke")
+
+        ScreenGui.Name = "Syniox_AntiAFK"
+        ScreenGui.Parent = game:GetService("CoreGui")
+        
+        MainFrame.Parent = ScreenGui
+        MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) 
+        MainFrame.BackgroundTransparency = 0.1
+        MainFrame.Position = UDim2.new(0.05, 0, 0.4, 0)
+        MainFrame.Size = UDim2.new(0, 120, 0, 125)
+        MainFrame.Active = true
+        MainFrame.Draggable = true 
+
+        UICorner.CornerRadius = UDim.new(0, 8)
+        UICorner.Parent = MainFrame
+
+        UIStroke.Parent = MainFrame
+        UIStroke.Color = Color3.fromRGB(150, 0, 0) 
+        UIStroke.Thickness = 1.5
+
+        Title.Parent = MainFrame
+        Title.Size = UDim2.new(1, 0, 0, 28)
+        Title.Text = "Syniox Anti-Afk" 
+        Title.TextColor3 = Color3.fromRGB(200, 0, 0)
+        Title.BackgroundTransparency = 1
+        Title.TextSize = 15
+        Title.Font = Enum.Font.SourceSansBold
+
+        Separator.Parent = MainFrame
+        Separator.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+        Separator.BorderSizePixel = 0
+        Separator.Position = UDim2.new(0.1, 0, 0, 28)
+        Separator.Size = UDim2.new(0.8, 0, 0, 1)
+
+        local function SetupLabel(lbl, text, pos)
+            lbl.Parent = MainFrame
+            lbl.Position = pos
+            lbl.Size = UDim2.new(1, 0, 0, 25)
+            lbl.Text = text
+            lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+            lbl.BackgroundTransparency = 1
+            lbl.TextSize = 16
+            lbl.Font = Enum.Font.SourceSansBold
+            lbl.TextXAlignment = Enum.TextXAlignment.Center
+        end
+
+        SetupLabel(TimerLabel, "⏳ Time: 00:00:00", UDim2.new(0, 0, 0, 35))
+        SetupLabel(FPSLabel, "🚀 FPS: 0", UDim2.new(0, 0, 0, 62))
+        SetupLabel(MSLabel, "📡 MS: 0", UDim2.new(0, 0, 0, 89))
+
+        local startTime = os.time()
+        local RunService = game:GetService("RunService")
+        local Stats = game:GetService("Stats")
+        
+        task.spawn(function()
+            while _G.AntiAfkActive do
+                local diff = os.time() - startTime
+                TimerLabel.Text = string.format("⏳ Time: %02d:%02d:%02d", math.floor(diff/3600), math.floor((diff%3600)/60), diff%60)
+                
+                local fps = math.floor(1 / RunService.RenderStepped:Wait())
+                FPSLabel.Text = "🚀 FPS: " .. fps
+                
+                local ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+                MSLabel.Text = "📡 MS: " .. ping
+                
+                task.wait(0.5)
+            end
+        end)
+
+    else
+        _G.AntiAfkActive = false
+        if antiAfkConnection then antiAfkConnection:Disconnect() end
+        local oldGui = game:GetService("CoreGui"):FindFirstChild("Syniox_AntiAFK")
+        if oldGui then oldGui:Destroy() end
+    end
+end)
