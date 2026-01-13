@@ -1610,90 +1610,82 @@ local AutoTradeTab = window:AddTab("Auto Trade")
 AutoTradeTab:AddLabel("Advanced Trade System")
 
 local SelectPlayerName = ""
-local selectedPet = "Neon Guardian"
+local selectedPet = "Blue Birdie"
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
--- 1. OYUNCU BULMA (SENİN KODUNUN UYARLANMIŞ HALİ)
 local PlayerDrop = AutoTradeTab:AddDropdown("Select Player", function(Value)
-    SelectPlayerName = Value:match("| (.+)")
+    SelectPlayerName = Value:match("| (.+)") or Value
 end)
 
 local function UpdatePlayerList()
-    PlayerDrop:Clear() -- Listeyi temizle ki eskiler kalmasın
-    local Playerslist = {}
-    for _, Plr in pairs(game:GetService("Players"):GetPlayers()) do
-        if Plr ~= game:GetService("Players").LocalPlayer then
+    PlayerDrop:Clear()
+    for _, Plr in ipairs(Players:GetPlayers()) do
+        if Plr ~= LocalPlayer then
             local displayName = Plr.DisplayName .. " | " .. Plr.Name
-            table.insert(Playerslist, displayName)
+            PlayerDrop:Add(displayName)
         end
     end
-    for _, AddPlr in ipairs(Playerslist) do
-        PlayerDrop:Add(AddPlr)
-    end
 end
-UpdatePlayerList()
 
--- 2. PET SEÇİMİ
+UpdatePlayerList()
+Players.PlayerAdded:Connect(UpdatePlayerList)
+Players.PlayerRemoving:Connect(UpdatePlayerList)
+
 local petDropdown = AutoTradeTab:AddDropdown("Select Pet", function(text)
     selectedPet = text
 end)
 
-local petsList = {
-    "Neon Guardian", 
-    "Blue Birdie", 
-    "Blue Bunny", 
-    "Blue Firecaster", 
-    "Blue Pheonix",
-    "Crimson Falcon",
-    "Cybernetic Showdown Dragon", 
-    "Dark Golem", 
-    "Dark Legends Manticore",
-    "Dark Vampy", 
-    "Darkstar Hunter", 
-    "Eternal Strike Leviathan", 
-    "Frostwave Legends Penguin",
-    "Gold Warrior", 
-    "Golden Pheonix", 
-    "Golden Viking", 
-    "Green Butterfly", 
-    "Green Firecaster",
-    "Infernal Dragon", 
-    "Lightning Strike Phantom", 
-    "Magic Butterfly", 
-    "Muscle Sensei",
-    "Orange Hedgehog", 
-    "Orange Pegasus", 
-    "Phantom Genesis Dragon", 
-    "Purple Dragon",
-    "Purple Falcon", 
-    "Red Dragon", 
-    "Red Firecaster", 
-    "Red Kitty", 
-    "Silver Dog",
-    "Ultimate Supernova Pegasus", 
-    "Ultra Birdie", 
-    "White Pegasus", 
-    "White Pheonix", 
-    "Yellow Butterfly"
-}
+petDropdown:Add("Blue Birdie")
+petDropdown:Add("Blue Bunny")
+petDropdown:Add("Blue Firecaster")
+petDropdown:Add("Blue Pheonix")
+petDropdown:Add("Crimson Falcon")
+petDropdown:Add("Cybernetic Showdown Dragon")
+petDropdown:Add("Dark Golem")
+petDropdown:Add("Dark Legends Manticore")
+petDropdown:Add("Dark Vampy")
+petDropdown:Add("Darkstar Hunter")
+petDropdown:Add("Eternal Strike Leviathan")
+petDropdown:Add("Frostwave Legends Penguin")
+petDropdown:Add("Gold Warrior")
+petDropdown:Add("Golden Pheonix")
+petDropdown:Add("Golden Viking")
+petDropdown:Add("Green Butterfly")
+petDropdown:Add("Green Firecaster")
+petDropdown:Add("Infernal Dragon")
+petDropdown:Add("Lightning Strike Phantom")
+petDropdown:Add("Magic Butterfly")
+petDropdown:Add("Muscle Sensei")
+petDropdown:Add("Neon Guardian")
+petDropdown:Add("Orange Hedgehog")
+petDropdown:Add("Orange Pegasus")
+petDropdown:Add("Phantom Genesis Dragon")
+petDropdown:Add("Purple Dragon")
+petDropdown:Add("Purple Falcon")
+petDropdown:Add("Red Dragon")
+petDropdown:Add("Red Firecaster")
+petDropdown:Add("Red Kitty")
+petDropdown:Add("Silver Dog")
+petDropdown:Add("Ultimate Supernova Pegasus")
+petDropdown:Add("Ultra Birdie")
+petDropdown:Add("White Pegasus")
+petDropdown:Add("White Pheonix")
+petDropdown:Add("Yellow Butterfly")
 
-for _, petName in ipairs(petsList) do
-    petDropdown:Add(petName)
-end
-
--- 3. AUTO TRADE SWITCH
 _G.AutoTradeActive = false
 AutoTradeTab:AddSwitch("Start Auto Trade & Accept", function(state)
     _G.AutoTradeActive = state
     task.spawn(function()
         while _G.AutoTradeActive do
-            local target = game.Players:FindFirstChild(SelectPlayerName)
+            local target = Players:FindFirstChild(SelectPlayerName)
             if target then
-                local event = game:GetService("Players").LocalPlayer:FindFirstChild("muscleEvent")
+                local event = LocalPlayer:FindFirstChild("muscleEvent")
                 if event then
                     event:FireServer("tradeRequest", target)
-                    task.wait(0.01)
+                    task.wait(0.1)
                     event:FireServer("addPet", selectedPet)
-                    task.wait(0.01)
+                    task.wait(0.1)
                     event:FireServer("acceptTrade")
                 end
             end
