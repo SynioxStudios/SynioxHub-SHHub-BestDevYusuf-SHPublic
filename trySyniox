@@ -1683,31 +1683,30 @@ TradeTab:AddSwitch("Auto Trade", function(Value)
                     
                     local tradeGui = Player.PlayerGui:WaitForChild("tradeGui", 5)
                     if tradeGui then
-                        local waitTime = 0
-                        while not tradeGui.Enabled and getgenv().autoTrade and waitTime < 10 do
-                            task.wait(0.5)
-                            waitTime = waitTime + 0.5
-                        end
+                        repeat task.wait(0.2) until (tradeGui.Enabled) or not getgenv().autoTrade
                         
                         if tradeGui.Enabled then
                             local pet = Player.Backpack:FindFirstChild(selectedPet)
                             if pet then
-                                for i = 1, 3 do 
+                                for i = 1, 4 do 
                                     ReplicatedStorage.tradeEvent:FireServer("add", pet)
-                                    task.wait(0.2)
+                                    task.wait(0.1)
                                 end
-                                task.wait(0.4)
+                                task.wait(0.2)
                                 ReplicatedStorage.tradeEvent:FireServer("accept")
-                                task.wait(0.6)
+                                task.wait(0.4)
                                 ReplicatedStorage.tradeEvent:FireServer("confirm")
+                                
+                                repeat task.wait(0.2) until (not tradeGui.Enabled) or not getgenv().autoTrade
                             end
                         end
                     end
                 end
             end
-            task.wait(2)
+            task.wait(0.5)
         end
     end)
 end)
 
-TradeTab:AddLabel("YouTube: Tanıtıma eklendi")
+TradeTab:AddLabel("YouTube Tanıtım Bilgisi Eklendi")
+TradeTab:AddLabel("Discord: https://discord.gg/FsG2cGay")
