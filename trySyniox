@@ -1619,23 +1619,17 @@ local playerDropdown = TradeTab:AddDropdown("Choose Player", function(v)
     selectedTarget = v
 end)
 
-task.spawn(function()
-    while true do
-        local currentPlayers = {}
-        for _, v in pairs(Players:GetPlayers()) do
-            if v ~= Player then 
-                table.insert(currentPlayers, v.Name)
-            end
-        end
-        
-        playerDropdown:Clear()
-        for _, name in pairs(currentPlayers) do
-            playerDropdown:Add(name)
-        end
-        
-        task.wait(5)
+local function addNewPlayer(p)
+    if p ~= Player then
+        playerDropdown:Add(p.Name)
     end
-end)
+end
+
+for _, v in pairs(Players:GetPlayers()) do
+    addNewPlayer(v)
+end
+
+Players.PlayerAdded:Connect(addNewPlayer)
 
 local selectionDropdown = TradeTab:AddDropdown("Choose Pet", function(v)
     selectedPet = v
@@ -1717,4 +1711,3 @@ TradeTab:AddSwitch("Auto Trade", function(Value)
 end)
 
 TradeTab:AddLabel("YouTube: Tanıtıma eklendi")
-TradeTab:AddLabel("Discord: https://discord.gg/FsG2cGay")
