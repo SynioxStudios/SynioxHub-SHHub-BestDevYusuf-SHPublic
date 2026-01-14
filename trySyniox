@@ -1674,17 +1674,24 @@ TradeTab:AddSwitch("Auto Trade", function(Value)
                 local targetPlayer = Players:FindFirstChild(selectedTarget)
                 if targetPlayer then
                     ReplicatedStorage.tradeEvent:FireServer("request", targetPlayer)
-                    task.wait(1.5)
                     
-                    local petInBackpack = Player.Backpack:FindFirstChild(selectedPet)
-                    if petInBackpack then
-                        ReplicatedStorage.tradeEvent:FireServer("add", petInBackpack)
-                        task.wait(1)
-                        ReplicatedStorage.tradeEvent:FireServer("accept")
+                    local tradeWindow = nil
+                    repeat
+                        task.wait(0.1)
+                        tradeWindow = Player.PlayerGui:FindFirstChild("tradeGui")
+                    until (tradeWindow and tradeWindow.Enabled) or not getgenv().autoTrade
+                    
+                    if tradeWindow and tradeWindow.Enabled then
+                        local petInBackpack = Player.Backpack:FindFirstChild(selectedPet)
+                        if petInBackpack then
+                            ReplicatedStorage.tradeEvent:FireServer("add", petInBackpack)
+                            task.wait(0.2)
+                            ReplicatedStorage.tradeEvent:FireServer("accept")
+                        end
                     end
                 end
             end
-            task.wait(3)
+            task.wait(2)
         end
     end)
 end)
