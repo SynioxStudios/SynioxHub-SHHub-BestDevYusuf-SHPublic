@@ -1606,30 +1606,136 @@ Misc:AddSwitch("Anti Afk", function(Value)
     end
 end)
 
-local TradeTab = window:AddTab("Trade")
+local pets = window:AddTab("Pets")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local selectedPet = "Neon Guardian"
+local petDropdown = pets:AddDropdown("Select Pet", function(text)
+    selectedPet = text
+end)
+
+petDropdown:Add("Neon Guardian")
+petDropdown:Add("Blue Birdie")
+petDropdown:Add("Blue Bunny")
+petDropdown:Add("Blue Firecaster")
+petDropdown:Add("Blue Pheonix")
+petDropdown:Add("Crimson Falcon")
+petDropdown:Add("Cybernetic Showdown Dragon")
+petDropdown:Add("Dark Golem")
+petDropdown:Add("Dark Legends Manticore")
+petDropdown:Add("Dark Vampy")
+petDropdown:Add("Darkstar Hunter")
+petDropdown:Add("Eternal Strike Leviathan")
+petDropdown:Add("Frostwave Legends Penguin")
+petDropdown:Add("Gold Warrior")
+petDropdown:Add("Golden Pheonix")
+petDropdown:Add("Golden Viking")
+petDropdown:Add("Green Butterfly")
+petDropdown:Add("Green Firecaster")
+petDropdown:Add("Infernal Dragon")
+petDropdown:Add("Lightning Strike Phantom")
+petDropdown:Add("Magic Butterfly")
+petDropdown:Add("Muscle Sensei")
+petDropdown:Add("Orange Hedgehog")
+petDropdown:Add("Orange Pegasus")
+petDropdown:Add("Phantom Genesis Dragon")
+petDropdown:Add("Purple Dragon")
+petDropdown:Add("Purple Falcon")
+petDropdown:Add("Red Dragon")
+petDropdown:Add("Red Firecaster")
+petDropdown:Add("Red Kitty")
+petDropdown:Add("Silver Dog")
+petDropdown:Add("Ultimate Supernova Pegasus")
+petDropdown:Add("Ultra Birdie")
+petDropdown:Add("White Pegasus")
+petDropdown:Add("White Pheonix")
+petDropdown:Add("Yellow Butterfly")
+
+pets:AddSwitch("Auto Open Pet", function(bool)
+    _G.AutoHatchPet = bool
+    if bool then
+        spawn(function()
+            while _G.AutoHatchPet and selectedPet ~= "" do
+                local petToOpen = ReplicatedStorage.cPetShopFolder:FindFirstChild(selectedPet)
+                if petToOpen then
+                    ReplicatedStorage.cPetShopRemote:InvokeServer(petToOpen)
+                end
+                task.wait(0.1)
+            end
+        end)
+    end
+end)
+
+local selectedAura = "Blue Aura"
+local auraDropdown = pets:AddDropdown("Select Aura", function(text)
+    selectedAura = text
+end)
+
+auraDropdown:Add("Entropic Blast")
+auraDropdown:Add("Azure Tundra")
+auraDropdown:Add("Blue Aura")
+auraDropdown:Add("Dark Electro")
+auraDropdown:Add("Dark Lightning")
+auraDropdown:Add("Dark Storm")
+auraDropdown:Add("Electro")
+auraDropdown:Add("Enchanted Mirage")
+auraDropdown:Add("Astral Electro")
+auraDropdown:Add("Eternal Megastrike")
+auraDropdown:Add("Grand Supernova")
+auraDropdown:Add("Green Aura")
+auraDropdown:Add("Inferno")
+auraDropdown:Add("Lightning")
+auraDropdown:Add("Muscle King")
+auraDropdown:Add("Power Lightning")
+auraDropdown:Add("Purple Aura")
+auraDropdown:Add("Purple Nova")
+auraDropdown:Add("Red Aura")
+auraDropdown:Add("Supernova")
+auraDropdown:Add("Ultra Inferno")
+auraDropdown:Add("Ultra Mirage")
+auraDropdown:Add("Unstable Mirage")
+auraDropdown:Add("Yellow Aura")
+
+pets:AddSwitch("Auto Open Aura", function(bool)
+    _G.AutoHatchAura = bool
+    if bool then
+        spawn(function()
+            while _G.AutoHatchAura and selectedAura ~= "" do
+                local auraToOpen = ReplicatedStorage.cPetShopFolder:FindFirstChild(selectedAura)
+                if auraToOpen then
+                    ReplicatedStorage.cPetShopRemote:InvokeServer(auraToOpen)
+                end
+                task.wait(0.1)
+            end
+        end)
+    end
+
+local pets = window:AddTab("Pets")
+
+pets:AddLabel("Trade System")
+pets:AddLabel("----------------------------")
 
 local selectedTarget = nil
 local selectedPet = nil
 
-local playerDropdown = TradeTab:AddDropdown("Select Player", function(v)
+local playerDropdown = pets:AddDropdown("Select Player", function(v)
     selectedTarget = v:match("| (.+)")
 end)
 
-local function updatePlayerList()
-    playerDropdown:Clear()
-    for _, p in pairs(Players:GetPlayers()) do
-        if p ~= Player then
-            local displayName = p.DisplayName .. " | " .. p.Name
-            playerDropdown:Add(displayName)
-        end
+local function addNewPlayer(p)
+    if p ~= game:GetService("Players").LocalPlayer then
+        local displayName = p.DisplayName .. " | " .. p.Name
+        playerDropdown:Add(displayName)
     end
 end
 
-updatePlayerList()
-Players.PlayerAdded:Connect(updatePlayerList)
-Players.PlayerRemoving:Connect(updatePlayerList)
+for _, v in pairs(game:GetService("Players"):GetPlayers()) do
+    addNewPlayer(v)
+end
 
-local petDropdown = TradeTab:AddDropdown("Select Pet to Trade", function(v)
+game:GetService("Players").PlayerAdded:Connect(addNewPlayer)
+
+local petDropdown = pets:AddDropdown("Select Pet to Trade", function(v)
     selectedPet = v:match("^(.-)%s*%(") or v
     selectedPet = selectedPet:gsub("%s+$", "")
 end)
@@ -1650,7 +1756,7 @@ for _, petName in ipairs(petList) do
 end
 
 local function getPetInstance(name)
-    local playerPets = Player:FindFirstChild("PlayerPets")
+    local playerPets = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerPets")
     if playerPets then
         for _, folder in pairs(playerPets:GetChildren()) do
             if folder:IsA("Folder") then
@@ -1663,18 +1769,19 @@ local function getPetInstance(name)
     return nil
 end
 
-TradeTab:AddSwitch("Auto Trade", function(state)
+pets:AddSwitch("Auto Trade", function(state)
     getgenv().autoTrade = state
     task.spawn(function()
         while getgenv().autoTrade do
             if selectedTarget and selectedPet then
-                local targetPlayer = Players:FindFirstChild(selectedTarget)
-                local tradingEvent = ReplicatedStorage:FindFirstChild("rEvents") and ReplicatedStorage.rEvents:FindFirstChild("tradingEvent")
+                local targetPlayer = game:GetService("Players"):FindFirstChild(selectedTarget)
+                local tEvent = game:GetService("ReplicatedStorage"):FindFirstChild("rEvents") and game:GetService("ReplicatedStorage").rEvents:FindFirstChild("tradingEvent")
                 
-                if targetPlayer and tradingEvent then
-                    tradingEvent:FireServer("sendTradeRequest", targetPlayer)
+                if targetPlayer and tEvent then
+                    tEvent:FireServer("sendTradeRequest", targetPlayer)
                     
-                    local tradeGui = Player.PlayerGui:WaitForChild("tradeGui", 3) or Player.PlayerGui:WaitForChild("TradeGui", 3)
+                    local tradeGui = game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("tradeGui", 2) or game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("TradeGui", 2)
+                    
                     if tradeGui then
                         local timer = 0
                         while not tradeGui.Enabled and getgenv().autoTrade and timer < 25 do
@@ -1686,15 +1793,15 @@ TradeTab:AddSwitch("Auto Trade", function(state)
                             local petObj = getPetInstance(selectedPet)
                             if petObj then
                                 for i = 1, 4 do 
-                                    tradingEvent:FireServer("addPet", petObj, targetPlayer)
+                                    tEvent:FireServer("addPet", petObj, targetPlayer)
                                     task.wait(0.1)
                                 end
                                 task.wait(0.4)
-                                tradingEvent:FireServer("tradeAccept", targetPlayer)
+                                tEvent:FireServer("tradeAccept", targetPlayer)
                                 task.wait(0.6)
-                                tradingEvent:FireServer("confirmTrade", targetPlayer)
+                                tEvent:FireServer("confirmTrade", targetPlayer)
                                 
-                                repeat task.wait(1) until (not tradeGui.Enabled) or not getgenv().autoTrade
+                                repeat task.wait(0.5) until (not tradeGui.Enabled) or not getgenv().autoTrade
                             end
                         end
                     end
@@ -1705,5 +1812,5 @@ TradeTab:AddSwitch("Auto Trade", function(state)
     end)
 end)
 
-TradeTab:AddLabel("YouTube Tanıtımı: Script kanalımızda!")
-TradeTab:AddLabel("Discord: https://discord.gg/FsG2cGay")
+pets:AddLabel("")
+pets:AddLabel("Discord: https://discord.gg/FsG2cGay")
