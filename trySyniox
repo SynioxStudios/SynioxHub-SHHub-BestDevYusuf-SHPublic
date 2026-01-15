@@ -1634,6 +1634,7 @@ Players.PlayerAdded:Connect(addNewPlayer)
 
 local selectionDropdown = TradeTab:AddDropdown("Choose Pet", function(v)
     selectedPet = v:match("^(.-)%s*%(") or v
+    selectedPet = selectedPet:gsub("%s+$", "")
 end)
 
 selectionDropdown:Add("Blue Birdie (Basic)")
@@ -1679,7 +1680,9 @@ local function getPetInstance(name)
         for _, folder in pairs(playerPets:GetChildren()) do
             if folder:IsA("Folder") then
                 for _, pet in pairs(folder:GetChildren()) do
-                    if pet.Name == name then return pet end
+                    if pet.Name == name then 
+                        return pet 
+                    end
                 end
             end
         end
@@ -1700,28 +1703,33 @@ TradeTab:AddSwitch("Auto Trade", function(state)
                     
                     local tradeGui = Player.PlayerGui:WaitForChild("tradeGui", 3) or Player.PlayerGui:WaitForChild("TradeGui", 3)
                     if tradeGui then
-                        repeat task.wait(0.2) until (tradeGui.Enabled) or not getgenv().autoTrade
+                        local timer = 0
+                        while not tradeGui.Enabled and getgenv().autoTrade and timer < 20 do
+                            task.wait(0.5)
+                            timer = timer + 0.5
+                        end
                         
                         if tradeGui.Enabled then
                             local petObj = getPetInstance(selectedPet)
                             if petObj then
                                 for i = 1, 4 do 
                                     tradingEvent:FireServer("addItem", petObj, targetPlayer)
-                                    task.wait(0.1)
+                                    task.wait(0.2)
                                 end
-                                task.wait(0.3)
+                                task.wait(0.5)
+                                tradingEvent:FireServer("tradeAccepted", targetPlayer)
+                                task.wait(0.5)
                                 tradingEvent:FireServer("confirmTrade", targetPlayer)
                                 
-                                repeat task.wait(0.5) until (not tradeGui.Enabled) or not getgenv().autoTrade
+                                repeat task.wait(1) until (not tradeGui.Enabled) or not getgenv().autoTrade
                             end
                         end
                     end
                 end
             end
-            task.wait(1)
+            task.wait(2)
         end
     end)
 end)
 
 TradeTab:AddLabel("YouTube Tanıtım Bilgisi Eklendi")
-TradeTab:AddLabel("Discord: https://discord.gg/FsG2cGay")
