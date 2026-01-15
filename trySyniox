@@ -1612,6 +1612,8 @@ pets:AddSwitch("Auto Open Aura", function(bool)
     end
 end)
 
+local pets = window:AddTab("Pets")
+
 pets:AddLabel("Trade System")
 pets:AddLabel("----------------------------")
 
@@ -1631,8 +1633,7 @@ end
 
 local allPlayers = game:GetService("Players"):GetPlayers()
 for i = 1, #allPlayers do
-    local v = allPlayers[i]
-    addNewPlayer(v)
+    addNewPlayer(allPlayers[i])
 end
 
 game:GetService("Players").PlayerAdded:Connect(addNewPlayer)
@@ -1654,8 +1655,7 @@ local petList = {
 }
 
 for i = 1, #petList do
-    local petName = petList[i]
-    petDropdown:Add(petName)
+    petDropdown:Add(petList[i])
 end
 
 local function getPetInstance(name)
@@ -1682,8 +1682,7 @@ pets:AddSwitch("Auto Trade", function(state)
         while getgenv().autoTrade do
             if selectedTarget and selectedPet then
                 local targetPlayer = game:GetService("Players"):FindFirstChild(selectedTarget)
-                local rEvents = game:GetService("ReplicatedStorage"):FindFirstChild("rEvents")
-                local tEvent = rEvents and rEvents:FindFirstChild("tradingEvent")
+                local tEvent = game:GetService("ReplicatedStorage"):FindFirstChild("rEvents") and game:GetService("ReplicatedStorage").rEvents:FindFirstChild("tradingEvent")
                 
                 if targetPlayer and tEvent then
                     tEvent:FireServer("sendTradeRequest", targetPlayer)
@@ -1701,14 +1700,14 @@ pets:AddSwitch("Auto Trade", function(state)
                         if tradeGui.Enabled then
                             local petObj = getPetInstance(selectedPet)
                             if petObj then
+                                -- Senin verdiğin offerItem eventi:
                                 for i = 1, 4 do 
-                                    tEvent:FireServer("addPet", petObj, targetPlayer)
-                                    task.wait(0.1)
+                                    tEvent:FireServer("offerItem", petObj)
+                                    task.wait(0.15)
                                 end
-                                task.wait(0.4)
-                                tEvent:FireServer("tradeAccept", targetPlayer)
-                                task.wait(0.6)
-                                tEvent:FireServer("confirmTrade", targetPlayer)
+                                task.wait(0.5)
+                                -- Senin verdiğin acceptTrade eventi:
+                                tEvent:FireServer("acceptTrade")
                                 
                                 repeat task.wait(0.5) until (not tradeGui.Enabled) or not getgenv().autoTrade
                             end
@@ -1716,12 +1715,13 @@ pets:AddSwitch("Auto Trade", function(state)
                     end
                 end
             end
-            task.wait(1)
+            task.wait(1.5)
         end
     end)
 end)
 
 pets:AddLabel("")
+pets:AddLabel("YouTube Tanıtımı Eklendi")
 pets:AddLabel("Discord: https://discord.gg/FsG2cGay")
 
 local Misc = window:AddTab("Misc")
