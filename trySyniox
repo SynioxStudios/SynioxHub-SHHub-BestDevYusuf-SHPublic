@@ -1612,8 +1612,6 @@ pets:AddSwitch("Auto Open Aura", function(bool)
     end
 end)
 
-local pets = window:AddTab("Pets")
-
 pets:AddLabel("Trade System")
 pets:AddLabel("----------------------------")
 
