@@ -1507,111 +1507,6 @@ Rock:AddSwitch("Jungle Rock 10M", function(Value)
     end)
 end)
 
-local Misc = window:AddTab("Misc")
-
-Misc:AddSwitch("Anti Afk", function(Value)
-    if Value then
-        _G.AntiAfkActive = true
-        
-        -- Anti-AFK Mekanizması
-        local vu = game:GetService("VirtualUser")
-        antiAfkConnection = game:GetService("Players").LocalPlayer.Idled:Connect(function()
-            if _G.AntiAfkActive then
-                vu:CaptureController()
-                vu:ClickButton2(Vector2.new())
-            end
-        end)
-
-        -- GUI Oluşturma
-        local ScreenGui = Instance.new("ScreenGui")
-        local MainFrame = Instance.new("Frame")
-        local UICorner = Instance.new("UICorner")
-        local Title = Instance.new("TextLabel")
-        local Separator = Instance.new("Frame")
-        local TimerLabel = Instance.new("TextLabel")
-        local FPSLabel = Instance.new("TextLabel")
-        local MSLabel = Instance.new("TextLabel")
-        local UIStroke = Instance.new("UIStroke")
-
-        ScreenGui.Name = "Syniox_AntiAFK"
-        ScreenGui.Parent = game:GetService("CoreGui")
-        
-        MainFrame.Parent = ScreenGui
-        MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) 
-        MainFrame.BackgroundTransparency = 0.1
-        MainFrame.Position = UDim2.new(0.05, 0, 0.4, 0)
-        MainFrame.Size = UDim2.new(0, 120, 0, 125)
-        MainFrame.Active = true
-        MainFrame.Draggable = true 
-
-        UICorner.CornerRadius = UDim.new(0, 8)
-        UICorner.Parent = MainFrame
-
-        UIStroke.Parent = MainFrame
-        UIStroke.Color = Color3.fromRGB(150, 0, 0) 
-        UIStroke.Thickness = 1.5
-
-        Title.Parent = MainFrame
-        Title.Size = UDim2.new(1, 0, 0, 28)
-        Title.Text = "Syniox Anti-Afk" 
-        Title.TextColor3 = Color3.fromRGB(200, 0, 0)
-        Title.BackgroundTransparency = 1
-        Title.TextSize = 15
-        Title.Font = Enum.Font.SourceSansBold
-
-        Separator.Parent = MainFrame
-        Separator.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
-        Separator.BorderSizePixel = 0
-        Separator.Position = UDim2.new(0.1, 0, 0, 28)
-        Separator.Size = UDim2.new(0.8, 0, 0, 1)
-
-        local function SetupLabel(lbl, text, pos)
-            lbl.Parent = MainFrame
-            lbl.Position = pos
-            lbl.Size = UDim2.new(1, 0, 0, 25)
-            lbl.Text = text
-            lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
-            lbl.BackgroundTransparency = 1
-            lbl.TextSize = 16
-            lbl.Font = Enum.Font.SourceSansBold
-            lbl.TextXAlignment = Enum.TextXAlignment.Center
-        end
-
-        SetupLabel(TimerLabel, "⏳ Time: 00:00:00", UDim2.new(0, 0, 0, 35))
-        SetupLabel(FPSLabel, "🚀 FPS: 0", UDim2.new(0, 0, 0, 62))
-        SetupLabel(MSLabel, "📡 MS: 0", UDim2.new(0, 0, 0, 89))
-
-        -- Güncelleme Döngüsü (Geliştirilmiş)
-        local startTime = os.time()
-        local RunService = game:GetService("RunService")
-        local Stats = game:GetService("Stats")
-        
-        task.spawn(function()
-            while _G.AntiAfkActive do
-                -- Zaman hesaplama
-                local diff = os.time() - startTime
-                TimerLabel.Text = string.format("⏳ Time: %02d:%02d:%02d", math.floor(diff/3600), math.floor((diff%3600)/60), diff%60)
-                
-                -- FPS Hesaplama (RenderStepped ile en doğru sonucu verir)
-                local fps = math.floor(1 / RunService.RenderStepped:Wait())
-                FPSLabel.Text = "🚀 FPS: " .. fps
-                
-                -- Ping (MS) Hesaplama
-                local ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
-                MSLabel.Text = "📡 MS: " .. ping
-                
-                task.wait(0.5) -- Her yarım saniyede bir güncelle (Performans için)
-            end
-        end)
-
-    else
-        _G.AntiAfkActive = false
-        if antiAfkConnection then antiAfkConnection:Disconnect() end
-        local oldGui = game:GetService("CoreGui"):FindFirstChild("Syniox_AntiAFK")
-        if oldGui then oldGui:Destroy() end
-    end
-end)
-
 local pets = window:AddTab("Pets")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -1714,5 +1609,222 @@ pets:AddSwitch("Auto Open Aura", function(bool)
                 task.wait(0.1)
             end
         end)
+    end
+end)
+
+pets:AddLabel("Trade System")
+pets:AddLabel("----------------------------")
+
+local selectedTarget = nil
+local selectedPet = nil
+
+local playerDropdown = pets:AddDropdown("Select Player", function(v)
+    selectedTarget = v:match("| (.+)")
+end)
+
+local function addNewPlayer(p)
+    if p ~= game:GetService("Players").LocalPlayer then
+        local displayName = p.DisplayName .. " | " .. p.Name
+        playerDropdown:Add(displayName)
+    end
+end
+
+local allPlayers = game:GetService("Players"):GetPlayers()
+for i = 1, #allPlayers do
+    local v = allPlayers[i]
+    addNewPlayer(v)
+end
+
+game:GetService("Players").PlayerAdded:Connect(addNewPlayer)
+
+local petDropdown = pets:AddDropdown("Select Pet to Trade", function(v)
+    local name = v:match("^(.-)%s*%(") or v
+    selectedPet = name:gsub("%s+$", "")
+end)
+
+local petList = {
+    "Blue Birdie (Basic)", "Orange Hedgehog (Basic)", "Red Kitty (Basic)", "Blue Bunny (Basic)", "Silver Dog (Basic)",
+    "Dark Vampy (Advanced)", "Dark Golem (Advanced)", "Green Butterfly (Advanced)", "Yellow Butterfly (Advanced)",
+    "Crimson Falcon (Rare)", "Purple Dragon (Rare)", "Orange Pegasus (Rare)", "Purple Falcon (Rare)", "Red Dragon (Rare)",
+    "White Pegasus (Rare)", "Frostwave Legends Penguin (Rare)", "Phantom Genesis Dragon (Rare)", "Eternal Strike Leviathan (Rare)",
+    "Blue Pheonix (Epic)", "Blue Firecaster (Epic)", "Golden Pheonix (Epic)", "Red Firecaster (Epic)", "Green Firecaster (Epic)",
+    "White Pheonix (Epic)", "Dark Legends Manticore (Epic)", "Ultimate Supernova Pegasus (Epic)", "Lightning Strike Phantom (Epic)", "Golden Viking (Epic)",
+    "Infernal Dragon (Unique)", "Ultra Birdie (Unique)", "Magic Butterfly (Unique)", "Aether Spirit Bunny (Unique)",
+    "Cybernetic Showdown Dragon (Unique)", "Darkstar Hunter (Unique)", "Muscle Sensei (Unique)", "Neon Guardian (Unique)"
+}
+
+for i = 1, #petList do
+    local petName = petList[i]
+    petDropdown:Add(petName)
+end
+
+local function getPetInstance(name)
+    local playerPets = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerPets")
+    if playerPets then
+        local folders = playerPets:GetChildren()
+        for i = 1, #folders do
+            local folder = folders[i]
+            if folder:IsA("Folder") then
+                local petsInFolder = folder:GetChildren()
+                for j = 1, #petsInFolder do
+                    local pet = petsInFolder[j]
+                    if pet.Name == name then return pet end
+                end
+            end
+        end
+    end
+    return nil
+end
+
+pets:AddSwitch("Auto Trade", function(state)
+    getgenv().autoTrade = state
+    task.spawn(function()
+        while getgenv().autoTrade do
+            if selectedTarget and selectedPet then
+                local targetPlayer = game:GetService("Players"):FindFirstChild(selectedTarget)
+                local rEvents = game:GetService("ReplicatedStorage"):FindFirstChild("rEvents")
+                local tEvent = rEvents and rEvents:FindFirstChild("tradingEvent")
+                
+                if targetPlayer and tEvent then
+                    tEvent:FireServer("sendTradeRequest", targetPlayer)
+                    
+                    local pGui = game:GetService("Players").LocalPlayer.PlayerGui
+                    local tradeGui = pGui:WaitForChild("tradeGui", 2) or pGui:WaitForChild("TradeGui", 2)
+                    
+                    if tradeGui then
+                        local timer = 0
+                        while not tradeGui.Enabled and getgenv().autoTrade and timer < 25 do
+                            task.wait(0.5)
+                            timer = timer + 0.5
+                        end
+                        
+                        if tradeGui.Enabled then
+                            local petObj = getPetInstance(selectedPet)
+                            if petObj then
+                                for i = 1, 4 do 
+                                    tEvent:FireServer("addPet", petObj, targetPlayer)
+                                    task.wait(0.1)
+                                end
+                                task.wait(0.4)
+                                tEvent:FireServer("tradeAccept", targetPlayer)
+                                task.wait(0.6)
+                                tEvent:FireServer("confirmTrade", targetPlayer)
+                                
+                                repeat task.wait(0.5) until (not tradeGui.Enabled) or not getgenv().autoTrade
+                            end
+                        end
+                    end
+                end
+            end
+            task.wait(1)
+        end
+    end)
+end)
+
+pets:AddLabel("")
+pets:AddLabel("Discord: https://discord.gg/FsG2cGay")
+
+local Misc = window:AddTab("Misc")
+
+Misc:AddSwitch("Anti Afk", function(Value)
+    if Value then
+        _G.AntiAfkActive = true
+        
+        -- Anti-AFK Mekanizması
+        local vu = game:GetService("VirtualUser")
+        antiAfkConnection = game:GetService("Players").LocalPlayer.Idled:Connect(function()
+            if _G.AntiAfkActive then
+                vu:CaptureController()
+                vu:ClickButton2(Vector2.new())
+            end
+        end)
+
+        -- GUI Oluşturma
+        local ScreenGui = Instance.new("ScreenGui")
+        local MainFrame = Instance.new("Frame")
+        local UICorner = Instance.new("UICorner")
+        local Title = Instance.new("TextLabel")
+        local Separator = Instance.new("Frame")
+        local TimerLabel = Instance.new("TextLabel")
+        local FPSLabel = Instance.new("TextLabel")
+        local MSLabel = Instance.new("TextLabel")
+        local UIStroke = Instance.new("UIStroke")
+
+        ScreenGui.Name = "Syniox_AntiAFK"
+        ScreenGui.Parent = game:GetService("CoreGui")
+        
+        MainFrame.Parent = ScreenGui
+        MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) 
+        MainFrame.BackgroundTransparency = 0.1
+        MainFrame.Position = UDim2.new(0.05, 0, 0.4, 0)
+        MainFrame.Size = UDim2.new(0, 120, 0, 125)
+        MainFrame.Active = true
+        MainFrame.Draggable = true 
+
+        UICorner.CornerRadius = UDim.new(0, 8)
+        UICorner.Parent = MainFrame
+
+        UIStroke.Parent = MainFrame
+        UIStroke.Color = Color3.fromRGB(150, 0, 0) 
+        UIStroke.Thickness = 1.5
+
+        Title.Parent = MainFrame
+        Title.Size = UDim2.new(1, 0, 0, 28)
+        Title.Text = "Syniox Anti-Afk" 
+        Title.TextColor3 = Color3.fromRGB(200, 0, 0)
+        Title.BackgroundTransparency = 1
+        Title.TextSize = 15
+        Title.Font = Enum.Font.SourceSansBold
+
+        Separator.Parent = MainFrame
+        Separator.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+        Separator.BorderSizePixel = 0
+        Separator.Position = UDim2.new(0.1, 0, 0, 28)
+        Separator.Size = UDim2.new(0.8, 0, 0, 1)
+
+        local function SetupLabel(lbl, text, pos)
+            lbl.Parent = MainFrame
+            lbl.Position = pos
+            lbl.Size = UDim2.new(1, 0, 0, 25)
+            lbl.Text = text
+            lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+            lbl.BackgroundTransparency = 1
+            lbl.TextSize = 16
+            lbl.Font = Enum.Font.SourceSansBold
+            lbl.TextXAlignment = Enum.TextXAlignment.Center
+        end
+
+        SetupLabel(TimerLabel, "⏳ Time: 00:00:00", UDim2.new(0, 0, 0, 35))
+        SetupLabel(FPSLabel, "🚀 FPS: 0", UDim2.new(0, 0, 0, 62))
+        SetupLabel(MSLabel, "📡 MS: 0", UDim2.new(0, 0, 0, 89))
+
+        -- Güncelleme Döngüsü (Geliştirilmiş)
+        local startTime = os.time()
+        local RunService = game:GetService("RunService")
+        local Stats = game:GetService("Stats")
+        
+        task.spawn(function()
+            while _G.AntiAfkActive do
+                -- Zaman hesaplama
+                local diff = os.time() - startTime
+                TimerLabel.Text = string.format("⏳ Time: %02d:%02d:%02d", math.floor(diff/3600), math.floor((diff%3600)/60), diff%60)
+                
+                -- FPS Hesaplama (RenderStepped ile en doğru sonucu verir)
+                local fps = math.floor(1 / RunService.RenderStepped:Wait())
+                FPSLabel.Text = "🚀 FPS: " .. fps
+                
+                -- Ping (MS) Hesaplama
+                local ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+                MSLabel.Text = "📡 MS: " .. ping
+                
+                task.wait(0.5) -- Her yarım saniyede bir güncelle (Performans için)
+            end
+        end)
+
+    else
+        _G.AntiAfkActive = false
+        if antiAfkConnection then antiAfkConnection:Disconnect() end
+        local oldGui = game:GetService("CoreGui"):FindFirstChild("Syniox_AntiAFK")
+        if oldGui then oldGui:Destroy() end
     end
 end)
