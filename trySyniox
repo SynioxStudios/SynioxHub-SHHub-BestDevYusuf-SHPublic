@@ -1704,7 +1704,7 @@ TradeTab:AddSwitch("Auto Trade", function(state)
                     local tradeGui = Player.PlayerGui:WaitForChild("tradeGui", 3) or Player.PlayerGui:WaitForChild("TradeGui", 3)
                     if tradeGui then
                         local timer = 0
-                        while not tradeGui.Enabled and getgenv().autoTrade and timer < 20 do
+                        while not tradeGui.Enabled and getgenv().autoTrade and timer < 25 do
                             task.wait(0.5)
                             timer = timer + 0.5
                         end
@@ -1713,12 +1713,12 @@ TradeTab:AddSwitch("Auto Trade", function(state)
                             local petObj = getPetInstance(selectedPet)
                             if petObj then
                                 for i = 1, 4 do 
-                                    tradingEvent:FireServer("addItem", petObj, targetPlayer)
-                                    task.wait(0.2)
+                                    tradingEvent:FireServer("addPet", petObj, targetPlayer)
+                                    task.wait(0.1)
                                 end
-                                task.wait(0.5)
-                                tradingEvent:FireServer("tradeAccepted", targetPlayer)
-                                task.wait(0.5)
+                                task.wait(0.4)
+                                tradingEvent:FireServer("tradeAccept", targetPlayer)
+                                task.wait(0.6)
                                 tradingEvent:FireServer("confirmTrade", targetPlayer)
                                 
                                 repeat task.wait(1) until (not tradeGui.Enabled) or not getgenv().autoTrade
@@ -1727,9 +1727,10 @@ TradeTab:AddSwitch("Auto Trade", function(state)
                     end
                 end
             end
-            task.wait(2)
+            task.wait(1)
         end
     end)
 end)
 
-TradeTab:AddLabel("YouTube Tanıtım Bilgisi Eklendi")
+TradeTab:AddLabel("YouTube Tanıtımı: Kanal bilgisi eklendi")
+TradeTab:AddLabel("Discord: https://discord.gg/FsG2cGay")
