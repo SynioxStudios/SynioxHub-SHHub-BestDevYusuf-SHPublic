@@ -1616,12 +1616,13 @@ local selectedTarget = nil
 local selectedPet = nil
 
 local playerDropdown = TradeTab:AddDropdown("Choose Player", function(v)
-    selectedTarget = v
+    selectedTarget = v:match("| (.+)")
 end)
 
 local function addNewPlayer(p)
     if p ~= Player then
-        playerDropdown:Add(p.Name)
+        local displayName = p.DisplayName .. " | " .. p.Name
+        playerDropdown:Add(displayName)
     end
 end
 
@@ -1632,89 +1633,95 @@ end
 Players.PlayerAdded:Connect(addNewPlayer)
 
 local selectionDropdown = TradeTab:AddDropdown("Choose Pet", function(v)
-    selectedPet = v
+    selectedPet = v:match("^(.-)%s*%(") or v
 end)
 
-selectionDropdown:Add("Neon Guardian")
-selectionDropdown:Add("Blue Birdie")
-selectionDropdown:Add("Blue Bunny")
-selectionDropdown:Add("Blue Firecaster")
-selectionDropdown:Add("Blue Pheonix")
-selectionDropdown:Add("Crimson Falcon")
-selectionDropdown:Add("Cybernetic Showdown Dragon")
-selectionDropdown:Add("Dark Golem")
-selectionDropdown:Add("Dark Legends Manticore")
-selectionDropdown:Add("Dark Vampy")
-selectionDropdown:Add("Darkstar Hunter")
-selectionDropdown:Add("Eternal Strike Leviathan")
-selectionDropdown:Add("Frostwave Legends Penguin")
-selectionDropdown:Add("Gold Warrior")
-selectionDropdown:Add("Golden Pheonix")
-selectionDropdown:Add("Golden Viking")
-selectionDropdown:Add("Green Butterfly")
-selectionDropdown:Add("Green Firecaster")
-selectionDropdown:Add("Infernal Dragon")
-selectionDropdown:Add("Lightning Strike Phantom")
-selectionDropdown:Add("Magic Butterfly")
-selectionDropdown:Add("Muscle Sensei")
-selectionDropdown:Add("Orange Hedgehog")
-selectionDropdown:Add("Orange Pegasus")
-selectionDropdown:Add("Phantom Genesis Dragon")
-selectionDropdown:Add("Purple Dragon")
-selectionDropdown:Add("Purple Falcon")
-selectionDropdown:Add("Red Dragon")
-selectionDropdown:Add("Red Firecaster")
-selectionDropdown:Add("Red Kitty")
-selectionDropdown:Add("Silver Dog")
-selectionDropdown:Add("Ultimate Supernova Pegasus")
-selectionDropdown:Add("Ultra Birdie")
-selectionDropdown:Add("White Pegasus")
-selectionDropdown:Add("White Pheonix")
-selectionDropdown:Add("Yellow Butterfly")
+selectionDropdown:Add("Blue Birdie (Basic)")
+selectionDropdown:Add("Orange Hedgehog (Basic)")
+selectionDropdown:Add("Red Kitty (Basic)")
+selectionDropdown:Add("Blue Bunny (Basic)")
+selectionDropdown:Add("Silver Dog (Basic)")
+selectionDropdown:Add("Dark Vampy (Advanced)")
+selectionDropdown:Add("Dark Golem (Advanced)")
+selectionDropdown:Add("Green Butterfly (Advanced)")
+selectionDropdown:Add("Yellow Butterfly (Advanced)")
+selectionDropdown:Add("Crimson Falcon (Rare)")
+selectionDropdown:Add("Purple Dragon (Rare)")
+selectionDropdown:Add("Orange Pegasus (Rare)")
+selectionDropdown:Add("Purple Falcon (Rare)")
+selectionDropdown:Add("Red Dragon (Rare)")
+selectionDropdown:Add("White Pegasus (Rare)")
+selectionDropdown:Add("Frostwave Legends Penguin (Rare)")
+selectionDropdown:Add("Phantom Genesis Dragon (Rare)")
+selectionDropdown:Add("Eternal Strike Leviathan (Rare)")
+selectionDropdown:Add("Blue Pheonix (Epic)")
+selectionDropdown:Add("Blue Firecaster (Epic)")
+selectionDropdown:Add("Golden Pheonix (Epic)")
+selectionDropdown:Add("Red Firecaster (Epic)")
+selectionDropdown:Add("Green Firecaster (Epic)")
+selectionDropdown:Add("White Pheonix (Epic)")
+selectionDropdown:Add("Dark Legends Manticore (Epic)")
+selectionDropdown:Add("Ultimate Supernova Pegasus (Epic)")
+selectionDropdown:Add("Lightning Strike Phantom (Epic)")
+selectionDropdown:Add("Golden Viking (Epic)")
+selectionDropdown:Add("Infernal Dragon (Unique)")
+selectionDropdown:Add("Ultra Birdie (Unique)")
+selectionDropdown:Add("Magic Butterfly (Unique)")
+selectionDropdown:Add("Aether Spirit Bunny (Unique)")
+selectionDropdown:Add("Cybernetic Showdown Dragon (Unique)")
+selectionDropdown:Add("Darkstar Hunter (Unique)")
+selectionDropdown:Add("Muscle Sensei (Unique)")
+selectionDropdown:Add("Neon Guardian (Unique)")
 
-TradeTab:AddSwitch("Auto Trade", function(Value)
-    getgenv().autoTrade = Value
+local function getPetInstance(name)
+    local playerPets = Player:FindFirstChild("PlayerPets")
+    if playerPets then
+        for _, folder in pairs(playerPets:GetChildren()) do
+            if folder:IsA("Folder") then
+                for _, pet in pairs(folder:GetChildren()) do
+                    if pet.Name == name then return pet end
+                end
+            end
+        end
+    end
+    return nil
+end
+
+TradeTab:AddSwitch("Auto Trade", function(state)
+    getgenv().autoTrade = state
     task.spawn(function()
         while getgenv().autoTrade do
             if selectedTarget and selectedPet then
                 local targetPlayer = Players:FindFirstChild(selectedTarget)
-                if targetPlayer then
-                    local tEvent = ReplicatedStorage:FindFirstChild("tradeEvent") or ReplicatedStorage:FindFirstChild("TradeEvent") or (ReplicatedStorage:FindFirstChild("Trade") and ReplicatedStorage.Trade:FindFirstChild("TradeEvent"))
+                local tradingEvent = ReplicatedStorage:FindFirstChild("rEvents") and ReplicatedStorage.rEvents:FindFirstChild("tradingEvent")
+                
+                if targetPlayer and tradingEvent then
+                    tradingEvent:FireServer("sendTradeRequest", targetPlayer)
                     
-                    if tEvent then
-                        tEvent:FireServer("request", targetPlayer)
+                    local tradeGui = Player.PlayerGui:WaitForChild("tradeGui", 3) or Player.PlayerGui:WaitForChild("TradeGui", 3)
+                    if tradeGui then
+                        repeat task.wait(0.2) until (tradeGui.Enabled) or not getgenv().autoTrade
                         
-                        local tradeGui = Player.PlayerGui:WaitForChild("tradeGui", 3) or Player.PlayerGui:WaitForChild("TradeGui", 3)
-                        
-                        if tradeGui then
-                            local waitTimer = 0
-                            while not tradeGui.Enabled and getgenv().autoTrade and waitTimer < 15 do
-                                task.wait(0.5)
-                                waitTimer = waitTimer + 0.5
-                            end
-                            
-                            if tradeGui.Enabled then
-                                local pet = Player.Backpack:FindFirstChild(selectedPet)
-                                if pet then
-                                    for i = 1, 4 do 
-                                        tEvent:FireServer("add", pet)
-                                        task.wait(0.1)
-                                    end
-                                    task.wait(0.3)
-                                    tEvent:FireServer("accept")
-                                    task.wait(0.5)
-                                    tEvent:FireServer("confirm")
-                                    
-                                    repeat task.wait(0.5) until (not tradeGui.Enabled) or not getgenv().autoTrade
+                        if tradeGui.Enabled then
+                            local petObj = getPetInstance(selectedPet)
+                            if petObj then
+                                for i = 1, 4 do 
+                                    tradingEvent:FireServer("addItem", petObj, targetPlayer)
+                                    task.wait(0.1)
                                 end
+                                task.wait(0.3)
+                                tradingEvent:FireServer("confirmTrade", targetPlayer)
+                                
+                                repeat task.wait(0.5) until (not tradeGui.Enabled) or not getgenv().autoTrade
                             end
                         end
                     end
                 end
             end
-            task.wait(1.5)
+            task.wait(1)
         end
     end)
 end)
 
 TradeTab:AddLabel("YouTube Tanıtım Bilgisi Eklendi")
+TradeTab:AddLabel("Discord: https://discord.gg/FsG2cGay")
