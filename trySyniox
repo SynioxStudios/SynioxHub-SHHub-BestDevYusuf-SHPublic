@@ -1612,6 +1612,145 @@ pets:AddSwitch("Auto Open Aura", function(bool)
     end
 end)
 
+pets:AddLabel("----------------------------")
+pets:AddLabel("Auto Evolve Pet")
+
+local pets = _G.pets
+local selectedEvolvePet = ""
+local autoEvolvePet = false
+
+local evolvePetDropdown = pets:AddDropdown("Select Pet to Evolve", function(text)
+    selectedEvolvePet = text
+end)
+
+evolvePetDropdown:Add("Blue Birdie (Basic)")
+evolvePetDropdown:Add("Orange Hedgehog (Basic)")
+evolvePetDropdown:Add("Red Kitty (Basic)")
+evolvePetDropdown:Add("Blue Bunny (Basic)")
+evolvePetDropdown:Add("Silver Dog (Basic)")
+
+evolvePetDropdown:Add("Dark Vampy (Advanced)")
+evolvePetDropdown:Add("Dark Golem (Advanced)")
+evolvePetDropdown:Add("Green Butterfly (Advanced)")
+evolvePetDropdown:Add("Yellow Butterfly (Advanced)")
+
+evolvePetDropdown:Add("Crimson Falcon (Rare)")
+evolvePetDropdown:Add("Purple Dragon (Rare)")
+evolvePetDropdown:Add("Orange Pegasus (Rare)")
+evolvePetDropdown:Add("Purple Falcon (Rare)")
+evolvePetDropdown:Add("Red Dragon (Rare)")
+evolvePetDropdown:Add("White Pegasus (Rare)")
+evolvePetDropdown:Add("Frostwave Legends Penguin (Rare)")
+evolvePetDropdown:Add("Phantom Genesis Dragon (Rare)")
+evolvePetDropdown:Add("Eternal Strike Leviathan (Rare)")
+
+evolvePetDropdown:Add("Blue Pheonix (Epic)")
+evolvePetDropdown:Add("Blue Firecaster (Epic)")
+evolvePetDropdown:Add("Golden Pheonix (Epic)")
+evolvePetDropdown:Add("Red Firecaster (Epic)")
+evolvePetDropdown:Add("Green Firecaster (Epic)")
+evolvePetDropdown:Add("White Pheonix (Epic)")
+evolvePetDropdown:Add("Dark Legends Manticore (Epic)")
+evolvePetDropdown:Add("Ultimate Supernova Pegasus (Epic)")
+evolvePetDropdown:Add("Lightning Strike Phantom (Epic)")
+evolvePetDropdown:Add("Golden Viking (Epic)")
+
+evolvePetDropdown:Add("Infernal Dragon (Unique)")
+evolvePetDropdown:Add("Ultra Birdie (Unique)")
+evolvePetDropdown:Add("Magic Butterfly (Unique)")
+evolvePetDropdown:Add("Aether Spirit Bunny (Unique)")
+evolvePetDropdown:Add("Cybernetic Showdown Dragon (Unique)")
+evolvePetDropdown:Add("Darkstar Hunter (Unique)")
+evolvePetDropdown:Add("Muscle Sensei (Unique)")
+evolvePetDropdown:Add("Neon Guardian (Unique)")
+
+evolvePetDropdown:Add("Blue Aura (Basic)")
+evolvePetDropdown:Add("Green Aura (Basic)")
+evolvePetDropdown:Add("Purple Aura (Basic)")
+evolvePetDropdown:Add("Red Aura (Basic)")
+evolvePetDropdown:Add("Yellow Aura (Basic)")
+evolvePetDropdown:Add("Ultra Inferno (Rare)")
+evolvePetDropdown:Add("Azure Tundra (Epic)")
+evolvePetDropdown:Add("Grand Supernova (Epic)")
+evolvePetDropdown:Add("Muscle King (Unique)")
+evolvePetDropdown:Add("Entropic Blast (Unique)")
+evolvePetDropdown:Add("Eternal Megastrike (Unique)")
+
+pets:AddSwitch("Auto Evolve Selected Pet", function(state)
+    autoEvolvePet = state
+    
+    if state then
+        if selectedEvolvePet == "" then
+            return
+        end
+        
+        local petName = selectedEvolvePet:match("^(.-)%s*%(")
+        if not petName then
+            petName = selectedEvolvePet
+        end
+        
+        task.spawn(function()
+            local maxAttempts = 1000
+            
+            while autoEvolvePet do
+                pcall(function()
+                    game:GetService("ReplicatedStorage").rEvents.petEvolveEvent:FireServer(
+                        "evolvePet",
+                        petName
+                    )
+                end)
+                
+                task.wait(0.5)
+                
+                if maxAttempts <= 0 then
+                    autoEvolvePet = false
+                    break
+                end
+                maxAttempts = maxAttempts - 1
+            end
+        end)
+    end
+end)
+
+pets:AddButton("Quick Evolve (1x)", function()
+    if selectedEvolvePet == "" then
+        return
+    end
+    
+    local petName = selectedEvolvePet:match("^(.-)%s*%(")
+    if not petName then
+        petName = selectedEvolvePet
+    end
+    
+    pcall(function()
+        game:GetService("ReplicatedStorage").rEvents.petEvolveEvent:FireServer(
+            "evolvePet",
+            petName
+        )
+    end)
+end)
+
+pets:AddButton("Quick Evolve (10x)", function()
+    if selectedEvolvePet == "" then
+        return
+    end
+    
+    local petName = selectedEvolvePet:match("^(.-)%s*%(")
+    if not petName then
+        petName = selectedEvolvePet
+    end
+    
+    for i = 1, 10 do
+        pcall(function()
+            game:GetService("ReplicatedStorage").rEvents.petEvolveEvent:FireServer(
+                "evolvePet",
+                petName
+            )
+        end)
+        task.wait(0.1)
+    end
+end)
+
 pets:AddLabel("Trade System")
 pets:AddLabel("----------------------------")
 
