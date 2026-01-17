@@ -1655,23 +1655,39 @@ for i = 1, #rawPetList do
     petDropdown:Add(rawPetList[i])
 end
 
+-- Petin gerçek objesini bulma fonksiyonu
+local function getPetObj(name)
+    local pPets = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerPets")
+    if pPets then
+        local folders = pPets:GetChildren()
+        for i = 1, #folders do
+            local f = folders[i]
+            if f:IsA("Folder") then
+                local items = f:GetChildren()
+                for j = 1, #items do
+                    if items[j].Name == name then return items[j] end
+                end
+            end
+        end
+    end
+    return nil
+end
+
 pets:AddSwitch("Auto Trade", function(state)
     getgenv().autoTrade = state
     task.spawn(function()
         while getgenv().autoTrade do
-            if selectedTarget then
+            if selectedTarget and selectedPet then
                 local targetPlayer = game:GetService("Players"):FindFirstChild(selectedTarget)
                 local tEvent = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("tradingEvent")
                 
                 if targetPlayer and tEvent then
-                    -- Önce trade isteği atar
                     tEvent:FireServer("sendTradeRequest", targetPlayer)
                     
                     local pGui = game:GetService("Players").LocalPlayer.PlayerGui
-                    local tradeGui = pGui:WaitForChild("tradeGui", 2) or pGui:WaitForChild("TradeGui", 2)
+                    local tradeGui = pGui:WaitForChild("tradeGui", 3) or pGui:WaitForChild("TradeGui", 3)
                     
                     if tradeGui then
-                        -- Pencerenin açılmasını bekler
                         local timer = 0
                         while not tradeGui.Enabled and getgenv().autoTrade and timer < 20 do
                             task.wait(0.5)
@@ -1679,30 +1695,32 @@ pets:AddSwitch("Auto Trade", function(state)
                         end
                         
                         if tradeGui.Enabled then
-                            -- Senin verdiğin pet koyma eventi (4 adet)
-                            for i = 1, 4 do 
-                                tEvent:FireServer("offerItem", "pet")
-                                task.wait(0.2)
+                            local petData = getPetObj(selectedPet)
+                            if petData then
+                                -- "pet" yazısı yerine gerçek pet verisini (petData) gönderiyoruz
+                                for i = 1, 4 do 
+                                    tEvent:FireServer("offerItem", petData)
+                                    task.wait(0.3)
+                                end
+                                
+                                task.wait(0.7)
+                                -- Kabul Etme
+                                tEvent:FireServer("acceptTrade")
+                                
+                                -- Ekran görüntüsündeki KABUL butonunun kapanmasını bekle
+                                repeat task.wait(0.5) until (not tradeGui.Enabled) or not getgenv().autoTrade
                             end
-                            
-                            task.wait(0.5)
-                            
-                            -- Senin verdiğin kabul etme eventi
-                            tEvent:FireServer("acceptTrade")
-                            
-                            -- Takas bitene kadar bekle ki döngü sapıtmasın
-                            repeat task.wait(0.5) until (not tradeGui.Enabled) or not getgenv().autoTrade
                         end
                     end
                 end
             end
-            task.wait(1.5)
+            task.wait(2)
         end
     end)
 end)
 
 pets:AddLabel("")
-pets:AddLabel("Discord: https://discord.gg/FsG2cGay")
+pets:AddLabel("Gay")
 
 local Misc = window:AddTab("Misc")
 
