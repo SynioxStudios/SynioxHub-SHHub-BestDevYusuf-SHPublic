@@ -1615,7 +1615,7 @@ end)
 pets:AddLabel("----------------------------")
 pets:AddLabel("Auto Evolve Pet")
 
-local pets = _G.pets
+local pets = local.pets
 local selectedEvolvePet = ""
 local autoEvolvePet = false
 
