@@ -1160,6 +1160,38 @@ end)
 
 showKillsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 
+local GymTab = Window:CreateTab("Gym")
+
+local selectedMachine = ""
+local machinePositions = {
+    ["🏋️ Jungle Lift"] = CFrame.new(-8666, 34, 2070),
+    ["🪨 Jungle Boulder"] = CFrame.new(-8614, 51, 2677),
+    ["🦵 Jungle Squat"] = CFrame.new(-8377, 48, 2864),
+    ["💪 Jungle Pull Ups"] = CFrame.new(-8173, 83, 1907)
+}
+
+GymTab:AddDropdown("📍 Select Jungle Machine", {"🏋️ Jungle Lift", "🪨 Jungle Boulder", "🦵 Jungle Squat", "💪 Jungle Pull Ups"}, function(v)
+    selectedMachine = v
+end)
+
+GymTab:AddSwitch("⚡ Auto Farm Jungle", function(bool)
+    getgenv().working = bool
+    if bool and selectedMachine ~= "" then
+        local character = LocalPlayer.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            character.HumanoidRootPart.CFrame = machinePositions[selectedMachine]
+            task.wait(0.2)
+            pressEKey()
+            task.spawn(autoLift)
+        end
+    else
+        getgenv().working = false
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+            LocalPlayer.Character:FindFirstChildOfClass("Humanoid").Jump = true
+        end
+    end
+end)
+
 local LookDura = window:AddTab("Stats")
 local SelectPlayerName = ""
 
@@ -1736,220 +1768,6 @@ pets:AddButton("Quick Evolve (10x)", function()
     end
 end)
 
-pets:AddLabel("")
-pets:AddLabel("----------------------------")
-pets:AddLabel("Trade System")
-
-local selectedTarget = nil
-local selectedPet = nil
-
-local playerDropdown = pets:AddDropdown("Select Player", function(v)
-    selectedTarget = v:match("| (.+)")
-end)
-
-local function addNewPlayer(p)
-    if p ~= game:GetService("Players").LocalPlayer then
-        local displayName = p.DisplayName .. " | " .. p.Name
-        playerDropdown:Add(displayName)
-    end
-end
-
-local allPlayers = game:GetService("Players"):GetPlayers()
-for i = 1, #allPlayers do
-    addNewPlayer(allPlayers[i])
-end
-
-game:GetService("Players").PlayerAdded:Connect(addNewPlayer)
-
-local petDropdown = pets:AddDropdown("Select Pet to Trade", function(v)
-    selectedPet = v
-end)
-
-local rawPetList = {
-    "Blue Birdie", "Orange Hedgehog", "Red Kitty", "Blue Bunny", "Silver Dog",
-    "Dark Vampy", "Dark Golem", "Green Butterfly", "Yellow Butterfly",
-    "Crimson Falcon", "Purple Dragon", "Orange Pegasus", "Purple Falcon", "Red Dragon",
-    "White Pegasus", "Frostwave Legends Penguin", "Phantom Genesis Dragon", "Eternal Strike Leviathan",
-    "Blue Pheonix", "Blue Firecaster", "Golden Pheonix", "Red Firecaster", "Green Firecaster",
-    "White Pheonix", "Dark Legends Manticore", "Ultimate Supernova Pegasus", "Lightning Strike Phantom", "Golden Viking",
-    "Infernal Dragon", "Ultra Birdie", "Magic Butterfly", "Aether Spirit Bunny",
-    "Cybernetic Showdown Dragon", "Darkstar Hunter", "Muscle Sensei", "Neon Guardian"
-}
-
-for i = 1, #rawPetList do
-    petDropdown:Add(rawPetList[i])
-end
-
--- Petin gerçek objesini bulma fonksiyonu
-local function getPetObj(name)
-    local pPets = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerPets")
-    if pPets then
-        local folders = pPets:GetChildren()
-        for i = 1, #folders do
-            local f = folders[i]
-            if f:IsA("Folder") then
-                local items = f:GetChildren()
-                for j = 1, #items do
-                    if items[j].Name == name then return items[j] end
-                end
-            end
-        end
-    end
-    return nil
-end
-
-pets:AddSwitch("Auto Trade", function(state)
-    getgenv().autoTrade = state
-    task.spawn(function()
-        while getgenv().autoTrade do
-            if selectedTarget and selectedPet then
-                local targetPlayer = game:GetService("Players"):FindFirstChild(selectedTarget)
-                local tEvent = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("tradingEvent")
-                
-                if targetPlayer and tEvent then
-                    tEvent:FireServer("sendTradeRequest", targetPlayer)
-                    
-                    local pGui = game:GetService("Players").LocalPlayer.PlayerGui
-                    local tradeGui = pGui:WaitForChild("tradeGui", 3) or pGui:WaitForChild("TradeGui", 3)
-                    
-                    if tradeGui then
-                        local timer = 0
-                        while not tradeGui.Enabled and getgenv().autoTrade and timer < 20 do
-                            task.wait(0.5)
-                            timer = timer + 0.5
-                        end
-                        
-                        if tradeGui.Enabled then
-                            local petData = getPetObj(selectedPet)
-                            if petData then
-                                -- "pet" yazısı yerine gerçek pet verisini (petData) gönderiyoruz
-                                for i = 1, 4 do 
-                                    tEvent:FireServer("offerItem", petData)
-                                    task.wait(0.3)
-                                end
-                                
-                                task.wait(0.7)
-                                -- Kabul Etme
-                                tEvent:FireServer("acceptTrade")
-                                
-                                -- Ekran görüntüsündeki KABUL butonunun kapanmasını bekle
-                                repeat task.wait(0.5) until (not tradeGui.Enabled) or not getgenv().autoTrade
-                            end
-                        end
-                    end
-                end
-            end
-            task.wait(2)
-        end
-    end)
-end)
-
-pets:AddLabel("Deneme")
-
-local tabFarming = window:AddTab("Pack Farm")
-
-local player = game.Players.LocalPlayer
-local muscleEvent = player:WaitForChild("muscleEvent")
-local runService = game:GetService("RunService")
-
-tabFarming:AddSwitch("Overdrive Training", function(state)
-    runFastRep = state
-    if state then
-        task.spawn(function()
-            while runFastRep do
-                muscleEvent:FireServer("rep")
-                runService.Heartbeat:Wait()
-            end
-        end)
-    end
-end)
-
-tabFarming:AddSwitch("Nutrient Injection (Auto Egg)", function(state)
-    autoEatEnabled = state
-end)
-
-tabFarming:AddSwitch("Stealth Frames (Hide UI)", function(bool)
-    local rSto = game:GetService("ReplicatedStorage")
-    for _, obj in pairs(rSto:GetChildren()) do
-        if obj.Name:match("Frame$") then
-            obj.Visible = not bool
-        end
-    end
-end)
-
-tabFarming:AddButton("Ultra Performance Mode", function()
-    local playerGui = player:WaitForChild("PlayerGui")
-    local lighting = game:GetService("Lighting")
-    for _, gui in pairs(playerGui:GetChildren()) do
-        if gui:IsA("ScreenGui") then gui:Destroy() end
-    end
-    for _, obj in pairs(workspace:GetDescendants()) do
-        if obj:IsA("ParticleEmitter") or obj:IsA("PointLight") or obj:IsA("SpotLight") or obj:IsA("SurfaceLight") then
-            obj:Destroy()
-        end
-    end
-    lighting.Brightness = 0
-    lighting.GlobalShadows = false
-end)
-
-tabFarming:AddSwitch("Infinite Evolution", function(bool)
-    fastRebirth = bool
-    if bool then
-        task.spawn(function()
-            local RS = game:GetService("ReplicatedStorage")
-            local function equipPet(name)
-                for _, pet in pairs(player.petsFolder.Unique:GetChildren()) do
-                    if pet.Name == name then
-                        RS.rEvents.equipPetEvent:FireServer("equipPet", pet)
-                    end
-                end
-            end
-            while fastRebirth do
-                local reb = player.leaderstats.Rebirths.Value
-                local neededStr = 10000 + (5000 * reb)
-                if player.ultimatesFolder:FindFirstChild("Golden Rebirth") then
-                    neededStr = math.floor(neededStr * (1 - (player.ultimatesFolder["Golden Rebirth"].Value * 0.1)))
-                end
-                equipPet("Swift Samurai")
-                while fastRebirth do
-                    if player.leaderstats.Strength.Value >= neededStr then break end
-                    player.muscleEvent:FireServer("rep")
-                    runService.Heartbeat:Wait()
-                end
-                equipPet("Tribal Overlord")
-                task.wait(0.2)
-                RS.rEvents.rebirthRemote:InvokeServer("rebirthRequest")
-                task.wait(0.5)
-            end
-        end)
-    end
-end)
-
-tabFarming:AddButton("Wild Workout (Jungle Lift)", function()
-    local character = player.Character
-    if character and character:FindFirstChild("HumanoidRootPart") then
-        character.HumanoidRootPart.CFrame = CFrame.new(-8666, 34, 2070)
-        task.wait(0.2)
-        local u = game:GetService("VirtualInputManager")
-        u:SendKeyEvent(true, "E", false, game)
-        task.wait(0.1)
-        u:SendKeyEvent(false, "E", false, game)
-    end
-end)
-
-tabFarming:AddSwitch("Position Anchor (Lock Pos)", function(Value)
-    if Value then
-        local currentPos = player.Character.HumanoidRootPart.CFrame
-        getgenv().posLock = runService.Heartbeat:Connect(function()
-            if player.Character:FindFirstChild("HumanoidRootPart") then
-                player.Character.HumanoidRootPart.CFrame = currentPos
-            end
-        end)
-    else
-        if getgenv().posLock then getgenv().posLock:Disconnect() end
-    end
-end)
-
 local Misc = window:AddTab("Misc")
 
 Misc:AddSwitch("Anti Afk", function(Value)
@@ -2089,6 +1907,36 @@ Misc:AddSwitch("Auto Fortune Wheel", function(Value)
         coroutine.wrap(openFortuneWheel)()
     else
         _G.autoFortuneWheelActive = false
+    end
+end)
+
+local timeDropdown = Misc:AddDropdown("Change Time", function(selection)
+    local lighting = game:GetService("Lighting")
+    
+    if selection == "Night" then
+        lighting.ClockTime = 0
+    elseif selection == "Day" then
+        lighting.ClockTime = 12
+    elseif selection == "Midnight" then
+        lighting.ClockTime = 6
+    end
+    
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Changed Time",
+        Text = "the time has been changed: " .. selection,
+        Duration = 0
+    })
+end)
+
+timeDropdown:Add("Night")
+timeDropdown:Add("Day")
+timeDropdown:Add("Midnight")
+
+Misc:AddSwitch("Full Walk on Water", function(bool)
+    if bool then
+        createParts()
+    else
+        makePartsWalkthrough()
     end
 end)
 
