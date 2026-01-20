@@ -1170,6 +1170,7 @@ local function pressEKey()
 end
 
 local selectedFarm = "None"
+local autoFarmEnabled = false
 local farmData = {
     ["Bench Press"] = {cf = CFrame.new(-8173, 64, 1898), event = "rep"},
     ["Squat"] = {cf = CFrame.new(-8352, 34, 2878), event = "rep"},
@@ -1177,13 +1178,17 @@ local farmData = {
     ["Jungle Lift"] = {cf = CFrame.new(-8642.396, 6.798, 2086.103), event = "rep"}
 }
 
-GymTab:CreateDropdown("Jungle Gym Exercises", {"None", "Bench Press", "Squat", "Boulder", "Jungle Lift"}, function(val)
+GymTab:CreateDropdown("Select Jungle Exercise", {"None", "Bench Press", "Squat", "Boulder", "Jungle Lift"}, function(val)
     selectedFarm = val
+end)
+
+GymTab:CreateSwitch("Auto Farm", function(bool)
+    autoFarmEnabled = bool
 end)
 
 task.spawn(function()
     while true do
-        if selectedFarm ~= "None" then
+        if autoFarmEnabled and selectedFarm ~= "None" then
             local data = farmData[selectedFarm]
             local char = game.Players.LocalPlayer.Character
             local root = char and char:FindFirstChild("HumanoidRootPart")
