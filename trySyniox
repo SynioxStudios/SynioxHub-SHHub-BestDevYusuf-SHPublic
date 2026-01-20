@@ -1162,19 +1162,22 @@ showKillsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 
 local GymTab = Window:CreateTab("Gym")
 
+-- Sadece Label kısmında emoji var
+GymTab:AddLabel("🌴 Jungle Gym")
+
 local selectedMachine = ""
 local machinePositions = {
-    ["🏋️ Jungle Lift"] = CFrame.new(-8666, 34, 2070),
-    ["🪨 Jungle Boulder"] = CFrame.new(-8614, 51, 2677),
-    ["🦵 Jungle Squat"] = CFrame.new(-8377, 48, 2864),
-    ["💪 Jungle Pull Ups"] = CFrame.new(-8173, 83, 1907)
+    ["Jungle Lift"] = CFrame.new(-8666, 34, 2070),
+    ["Jungle Boulder"] = CFrame.new(-8614, 51, 2677),
+    ["Jungle Squat"] = CFrame.new(-8377, 48, 2864),
+    ["Jungle Pull Ups"] = CFrame.new(-8173, 83, 1907)
 }
 
-GymTab:AddDropdown("📍 Select Jungle Machine", {"🏋️ Jungle Lift", "🪨 Jungle Boulder", "🦵 Jungle Squat", "💪 Jungle Pull Ups"}, function(v)
+GymTab:AddDropdown("Select Machine", {"Jungle Lift", "Jungle Boulder", "Jungle Squat", "Jungle Pull Ups"}, function(v)
     selectedMachine = v
 end)
 
-GymTab:AddSwitch("⚡ Auto Farm Jungle", function(bool)
+GymTab:AddSwitch("Auto Farm", function(bool)
     getgenv().working = bool
     if bool and selectedMachine ~= "" then
         local character = LocalPlayer.Character
