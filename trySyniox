@@ -1908,6 +1908,69 @@ Misc:AddSwitch("Full Walk on Water", function(bool)
     end
 end)
 
+local autoEatBoostsEnabled = false
+
+local boostsList = {
+    "ULTRA Shake",
+    "TOUGH Bar",
+    "Protein Shake",
+    "Energy Shake",
+    "Protein Bar",
+    "Energy Bar",
+}
+
+local function eatAllBoosts()
+    local player = game.Players.LocalPlayer
+    local backpack = player:WaitForChild("Backpack")
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    for _, boostName in ipairs(boostsList) do
+        local boost = backpack:FindFirstChild(boostName)
+        while boost do
+            boost.Parent = character
+            pcall(function()
+                boost:Activate()
+            end)
+            task.wait(0)
+            boost = backpack:FindFirstChild(boostName)
+        end
+    end
+end
+
+task.spawn(function()
+    while true do
+        if autoEatBoostsEnabled then
+            eatAllBoosts()
+            task.wait(2)
+        else
+            task.wait(1)
+        end
+    end
+end)
+
+Misc:AddSwitch("Auto Eat All (No Egg)", function(state)
+    autoEatBoostsEnabled = state
+end)
+
+Misc:AddSwitch("Anti Knockback", function(Value)
+    if Value then
+        local playerName = game.Players.LocalPlayer.Name
+        local rootPart = game.Workspace:FindFirstChild(playerName):FindFirstChild("HumanoidRootPart")
+        local bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.MaxForce = Vector3.new(100000, 0, 100000)
+        bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+        bodyVelocity.P = 1250
+        bodyVelocity.Parent = rootPart
+    else
+        local playerName = game.Players.LocalPlayer.Name
+        local rootPart = game.Workspace:FindFirstChild(playerName):FindFirstChild("HumanoidRootPart")
+        local existingVelocity = rootPart:FindFirstChild("BodyVelocity")
+        if existingVelocity and existingVelocity.MaxForce == Vector3.new(100000, 0, 100000) then
+            existingVelocity:Destroy()
+        end
+    end
+end)
+
 local teleport = window:AddTab("Teleport")
 
 teleport:AddButton("📍Spawn", function()
@@ -2065,3 +2128,18 @@ teleport:AddButton("📍Brawl Regular", function()
         Duration = 0
     })
 end)
+
+local credits = window:AddTab("Credits")
+
+-- Ana Bilgiler
+credits:AddLabel("✨ Syniox Hub V2")
+credits:AddLabel("👤 Developer: Yusuf")
+
+--Credits
+credits:AddLabel("--------------------------")
+credits:AddLabel("🤝 Special Thanks to: Halis & Henne")
+credits:AddLabel("❤️ Thanks for the support!")
+
+-- End
+credits:AddLabel("--------------------------")
+credits:AddLabel("🙏 Thank you for using Syniox Hub!")
