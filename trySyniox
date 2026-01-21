@@ -2221,10 +2221,12 @@ Misc:AddButton("🔄 Rejoin Game", function()
 
     Frame.Name = "MainFrame"
     Frame.Parent = ScreenGui
-    Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     Frame.Position = UDim2.new(0.5, -125, 0.5, -75)
     Frame.Size = UDim2.new(0, 250, 0, 150)
     Frame.BorderSizePixel = 0
+    Frame.Active = true
+    Frame.Draggable = true -- Paneli hareket ettirebilmen için
     Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 10)
 
     TextLabel.Parent = Frame
@@ -2233,36 +2235,34 @@ Misc:AddButton("🔄 Rejoin Game", function()
     TextLabel.Size = UDim2.new(0, 230, 0, 50)
     TextLabel.Font = Enum.Font.GothamBold
     TextLabel.Text = "Are you sure you want to rejoin?"
-    TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TextLabel.TextSize = 18
+    TextLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    TextLabel.TextSize = 16
     TextLabel.TextWrapped = true
 
     YesButton.Name = "YesButton"
     YesButton.Parent = Frame
-    YesButton.BackgroundColor3 = Color3.fromRGB(46, 204, 113)
-    YesButton.Position = UDim2.new(0, 20, 0, 90)
-    YesButton.Size = UDim2.new(0, 90, 0, 40)
+    YesButton.BackgroundColor3 = Color3.fromRGB(20, 100, 60) -- Koyu Yeşil
+    YesButton.Position = UDim2.new(0, 25, 0, 90)
+    YesButton.Size = UDim2.new(0, 85, 0, 35)
     YesButton.Font = Enum.Font.GothamBold
     YesButton.Text = "YES"
-    YesButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    YesButton.TextSize = 16
+    YesButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+    YesButton.TextSize = 14
     Instance.new("UICorner", YesButton).CornerRadius = UDim.new(0, 6)
 
     NoButton.Name = "NoButton"
     NoButton.Parent = Frame
-    NoButton.BackgroundColor3 = Color3.fromRGB(231, 76, 60)
+    NoButton.BackgroundColor3 = Color3.fromRGB(120, 30, 30) -- Koyu Kırmızı
     NoButton.Position = UDim2.new(0, 140, 0, 90)
-    NoButton.Size = UDim2.new(0, 90, 0, 40)
+    NoButton.Size = UDim2.new(0, 85, 0, 35)
     NoButton.Font = Enum.Font.GothamBold
     NoButton.Text = "NO"
-    NoButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    NoButton.TextSize = 16
+    NoButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+    NoButton.TextSize = 14
     Instance.new("UICorner", NoButton).CornerRadius = UDim.new(0, 6)
 
     YesButton.MouseButton1Click:Connect(function()
-        local ts = game:GetService("TeleportService")
-        local p = game.Players.LocalPlayer
-        ts:Teleport(game.PlaceId, p)
+        game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
     end)
 
     NoButton.MouseButton1Click:Connect(function()
