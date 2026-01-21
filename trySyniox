@@ -1743,7 +1743,7 @@ pets:AddSwitch("Auto Open Aura", function(bool)
 end)
 
 pets:AddLabel("----------------------------")
-Pets:AddLabel("✨ Auto Evolve Pet")
+pets:AddLabel("✨ Auto Evolve Pet")
 
 local pets = pets
 local selectedEvolvePet = ""
