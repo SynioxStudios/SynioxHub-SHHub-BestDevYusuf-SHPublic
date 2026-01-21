@@ -174,6 +174,57 @@ startJungleFarm("Auto Bench Press", CFrame.new(-8173.23, 83.82, 1907.40), "rep")
 startJungleFarm("Auto Squat", CFrame.new(-8377.55, 48.71, 2864.90), "rep")
 startJungleFarm("Auto Boulder", CFrame.new(-8614.81, 51.90, 2677.37), "rep")
 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local toolFolder = AutoFarm:AddFolder("Auto Tools")
+
+local function manageTool(toolName)
+    task.spawn(function()
+        while _G[toolName.."On"] do
+            local character = LocalPlayer.Character
+            if character then
+                local tool = LocalPlayer.Backpack:FindFirstChild(toolName) or character:FindFirstChild(toolName)
+                
+                if tool then
+                    if tool.Parent ~= character then
+                        tool.Parent = character
+                    end
+                    
+                    if toolName == "Punch" then
+                        if tool:FindFirstChild("attackTime") then
+                            tool.attackTime.Value = 0
+                        end
+                        tool:Activate()
+                    else
+                        local event = LocalPlayer:FindFirstChild("muscleEvent")
+                        if event then
+                            event:FireServer("rep")
+                        else
+                            tool:Activate()
+                        end
+                    end
+                end
+            end
+            task.wait(0.05)
+        end
+    end)
+end
+
+toolFolder:AddSwitch("Weight + Punch", function(bool)
+    _G.WeightOn = bool
+    _G.PunchOn = bool
+    if bool then 
+        manageTool("Weight")
+        manageTool("Punch")
+    else
+        local wTool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Weight")
+        local pTool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Punch")
+        if wTool then wTool.Parent = LocalPlayer.Backpack end
+        if pTool then pTool.Parent = LocalPlayer.Backpack end
+    end
+end)
+
 local rebirths = window:AddTab("Rebirths")
 
 rebirths:AddTextBox("Rebirth Target", function(text)
