@@ -2144,6 +2144,15 @@ scriptFolder:AddButton("⚡ Infinite Yield", function()
     })
 end)
 
+scriptFolder:AddButton("🎥 FreeCam", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/yofriendfromschool1/Skyhub-Test/main/Freecam.lua"))()
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Syniox Hub",
+        Text = "FreeCam Loaded!",
+        Duration = 3
+    })
+end)
+
 Misc:AddSwitch("🌊 Full Walk on Water", function(bool)
     if bool then
         createParts()
@@ -2287,35 +2296,6 @@ Misc:AddSwitch("🧱 Anti Knockback", function(Value)
             existingVelocity:Destroy()
         end
     end
-end)
-
-Misc:AddTextBox("🏃 WalkSpeed", "Enter Speed", function(v)
-    _G.SpeedValue = tonumber(v)
-    local player = game.Players.LocalPlayer
-    
-    task.spawn(function()
-        while _G.SpeedValue do
-            if player.Character and player.Character:FindFirstChild("Humanoid") then
-                player.Character.Humanoid.WalkSpeed = _G.SpeedValue
-            end
-            task.wait(0.1)
-        end
-    end)
-end)
-
-Misc:AddTextBox("🚀 JumpPower", "Enter Power", function(v)
-    _G.JumpValue = tonumber(v)
-    local player = game.Players.LocalPlayer
-    
-    task.spawn(function()
-        while _G.JumpValue do
-            if player.Character and player.Character:FindFirstChild("Humanoid") then
-                player.Character.Humanoid.UseJumpPower = true
-                player.Character.Humanoid.JumpPower = _G.JumpValue
-            end
-            task.wait(0.1)
-        end
-    end)
 end)
 
 local teleport = window:AddTab("Teleport")
