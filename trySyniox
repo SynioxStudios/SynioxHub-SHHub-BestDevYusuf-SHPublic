@@ -1874,6 +1874,15 @@ local selectedPet = nil
 pets:AddLabel("----------------------------")
 pets:AddLabel("💎 Trade System")
 
+local pets = window:AddTab("Trade System")
+
+local running = false
+local selectedTarget = nil
+local selectedPet = nil
+
+pets:AddLabel("Trade System")
+pets:AddLabel("----------------------------")
+
 local playerDropdown = pets:AddDropdown("Choose Player", function(name)
     local username = name:match(" | (.+)") or name
     selectedTarget = game:GetService("Players"):FindFirstChild(username)
@@ -1896,14 +1905,16 @@ local petDropdown = pets:AddDropdown("Choose Pet", function(text)
 end)
 
 local petList = {
-    "Blue Birdie", "Orange Hedgehog", "Red Kitty", "Blue Bunny", "Silver Dog",
-    "Dark Vampy", "Dark Golem", "Green Butterfly", "Yellow Butterfly",
-    "Crimson Falcon", "Purple Dragon", "Orange Pegasus", "Purple Falcon", "Red Dragon",
-    "White Pegasus", "Frostwave Legends Penguin", "Phantom Genesis Dragon", "Eternal Strike Leviathan",
-    "Blue Pheonix", "Blue Firecaster", "Golden Pheonix", "Red Firecaster", "Green Firecaster",
-    "White Pheonix", "Dark Legends Manticore", "Ultimate Supernova Pegasus", "Lightning Strike Phantom", "Golden Viking",
-    "Infernal Dragon", "Ultra Birdie", "Magic Butterfly", "Aether Spirit Bunny",
-    "Cybernetic Showdown Dragon", "Darkstar Hunter", "Muscle Sensei", "Neon Guardian"
+    "Blue Birdie (Basic)", "Orange Hedgehog (Basic)", "Red Kitty (Basic)", "Blue Bunny (Basic)", "Silver Dog (Basic)",
+    "Dark Vampy (Advanced)", "Dark Golem (Advanced)", "Green Butterfly (Advanced)", "Yellow Butterfly (Advanced)",
+    "Crimson Falcon (Rare)", "Purple Dragon (Rare)", "Orange Pegasus (Rare)", "Purple Falcon (Rare)", "Red Dragon (Rare)",
+    "White Pegasus (Rare)", "Frostwave Legends Penguin (Rare)", "Phantom Genesis Dragon (Rare)", "Eternal Strike Leviathan (Rare)",
+    "Blue Pheonix (Epic)", "Blue Firecaster (Epic)", "Golden Pheonix (Epic)", "Red Firecaster (Epic)", "Green Firecaster (Epic)",
+    "White Pheonix (Epic)", "Dark Legends Manticore (Epic)", "Ultimate Supernova Pegasus (Epic)", "Lightning Strike Phantom (Epic)", "Golden Viking (Epic)",
+    "Infernal Dragon (Unique)", "Ultra Birdie (Unique)", "Magic Butterfly (Unique)", "Aether Spirit Bunny (Unique)",
+    "Cybernetic Showdown Dragon (Unique)", "Darkstar Hunter (Unique)", "Muscle Sensei (Unique)", "Neon Guardian (Unique)",
+    "Blue Aura (Basic)", "Green Aura (Basic)", "Purple Aura (Basic)", "Red Aura (Basic)", "Yellow Aura (Basic)",
+    "Ultra Inferno (Rare)", "Azure Tundra (Epic)", "Grand Supernova (Epic)", "Muscle King (Unique)", "Entropic Blast (Unique)", "Eternal Megastrike (Unique)"
 }
 
 for _, name in ipairs(petList) do 
@@ -1954,6 +1965,10 @@ pets:AddSwitch("Auto Trade", function(state)
         end
     end)
 end)
+
+pets:AddLabel("----------------------------")
+pets:AddLabel("YouTube Tanıtımı: Script kanalımızda!")
+pets:AddLabel("Discord: https://discord.gg/FsG2cGay")
 
 local GymTab = window:AddTab("Gym")
 
