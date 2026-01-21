@@ -64,22 +64,22 @@ local function manageTool(toolName)
     end)
 end
 
-folder1:AddSwitch("Weight", function(bool)
+folder1:AddSwitch("🏋️ Weight", function(bool)
     _G.WeightOn = bool
     if bool then manageTool("Weight") end
 end)
 
-folder1:AddSwitch("Pushups", function(bool)
+folder1:AddSwitch("💪 Pushups", function(bool)
     _G.PushupsOn = bool
     if bool then manageTool("Pushups") end
 end)
 
-folder1:AddSwitch("Handstand", function(bool)
-    _G.HandstandOn = bool
-    if bool then manageTool("Handstand") end
+folder1:AddSwitch("🤸 Handstands", function(bool)
+    _G.HandstandsOn = bool
+    if bool then manageTool("Handstands") end
 end)
 
-folder1:AddSwitch("Situps", function(bool)
+folder1:AddSwitch("🧘 Situps", function(bool)
     _G.SitupsOn = bool
     if bool then manageTool("Situps") end
 end)
@@ -90,11 +90,11 @@ local RunService = game:GetService("RunService")
 local Player = Players.LocalPlayer
 
 local Locations = {
-    {name = "Jungle Treadmill +8 xp", pos = Vector3.new(-8131.86, 25.77, 2818.17)},
-    {name = "Legends Treadmill +7 xp", pos = Vector3.new(4365.82, 997.14, -3632.9)},
-    {name = "Mythical Treadmill +6 xp", pos = Vector3.new(2661.67, 19.41, 932.09)},
-    {name = "Spawn Treadmill +5 xp", pos = Vector3.new(-230.43, 8.16, -102.18)},
-    {name = "Tiny Treadmill +1 xp", pos = Vector3.new(55.64, 5.16, 1947.60)}
+    {name = "🌿 Jungle Treadmill +8 xp", pos = Vector3.new(-8131.86, 25.77, 2818.17)},
+    {name = "🔱 Legends Treadmill +7 xp", pos = Vector3.new(4365.82, 997.14, -3632.9)},
+    {name = "✨ Mythical Treadmill +6 xp", pos = Vector3.new(2661.67, 19.41, 932.09)},
+    {name = "🏠 Spawn Treadmill +5 xp", pos = Vector3.new(-230.43, 8.16, -102.18)},
+    {name = "👟 Tiny Treadmill +1 xp", pos = Vector3.new(55.64, 5.16, 1947.60)}
 }
 
 local posLockConnection = nil
@@ -169,10 +169,10 @@ local function startJungleFarm(toggleName, cframeValue, eventName)
     end)
 end
 
-startJungleFarm("Auto Jungle Lift", CFrame.new(-8652.85, 45.22, 2088.99), "rep")
-startJungleFarm("Auto Bench Press", CFrame.new(-8173.23, 83.82, 1907.40), "rep")
-startJungleFarm("Auto Squat", CFrame.new(-8377.55, 48.71, 2864.90), "rep")
-startJungleFarm("Auto Boulder", CFrame.new(-8614.81, 51.90, 2677.37), "rep")
+startJungleFarm("🌴 Auto Jungle Lift", CFrame.new(-8652.85, 45.22, 2088.99), "rep")
+startJungleFarm("🏋️ Auto Bench Press", CFrame.new(-8173.23, 83.82, 1907.40), "rep")
+startJungleFarm("🦵 Auto Squat", CFrame.new(-8377.55, 48.71, 2864.90), "rep")
+startJungleFarm("💢 Auto Boulder", CFrame.new(-8614.81, 51.90, 2677.37), "rep")
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -289,7 +289,7 @@ end)
 
 local infiniteSwitch
 
-local targetSwitch = rebirths:AddSwitch("Auto Rebirth Target", function(bool)
+local targetSwitch = rebirths:AddSwitch("🔄 Auto Rebirth Target", function(bool)
     _G.targetRebirthActive = bool
     
     if bool then
@@ -321,7 +321,7 @@ local targetSwitch = rebirths:AddSwitch("Auto Rebirth Target", function(bool)
     end
 end, "automatic rebirth until reaching the goal")
 
-infiniteSwitch = rebirths:AddSwitch("Auto Rebirth (Infinitely)", function(bool)
+infiniteSwitch = rebirths:AddSwitch("♾️ Auto Rebirth (Infinitely)", function(bool)
     _G.infiniteRebirthActive = bool
     
     if bool then
@@ -362,7 +362,7 @@ local sizeSwitch = rebirths:AddSwitch("Auto Size 2📏", function(bool)
     end
 end, "Size 2")
 
-local teleportSwitch = rebirths:AddSwitch("Auto Teleport to Muscle King", function(bool)
+local teleportSwitch = rebirths:AddSwitch("👑 Auto Teleport to Muscle King", function(bool)
     _G.teleportActive = bool
     
     if bool then
@@ -419,7 +419,7 @@ rebirths:AddSwitch("🥚 Auto Eat Egg 60 Min", function(state)
     autoEat60Enabled = state
 end)
 
-rebirths:AddSwitch("Hide All Frames", function(bool)
+rebirths:AddSwitch("👁️‍🗨️ Hide All Frames", function(bool)
     local rSto = game:GetService("ReplicatedStorage")
     for _, obj in pairs(rSto:GetChildren()) do
         if obj.Name:match("Frame$") then
@@ -430,7 +430,7 @@ end)
 
 local autoEquipToolsFolder = rebirths:AddFolder("Auto Equip Tools")
 
-autoEquipToolsFolder:AddButton("Gamepass AutoLift", function()
+autoEquipToolsFolder:AddButton("💎 Gamepass AutoLift", function()
     local gamepassFolder = game:GetService("ReplicatedStorage").gamepassIds
     local player = game:GetService("Players").LocalPlayer
     for _, gamepass in pairs(gamepassFolder:GetChildren()) do
@@ -439,9 +439,9 @@ autoEquipToolsFolder:AddButton("Gamepass AutoLift", function()
         value.Value = gamepass.Value
         value.Parent = player.ownedGamepasses
     end
-end, "Unlock AutoLift Passe")
+end, "🔓 Unlock AutoLift Passe")
 
-autoEquipToolsFolder:AddSwitch("Auto Weight", function(Value)
+autoEquipToolsFolder:AddSwitch("💪 Auto Weight", function(Value)
     _G.AutoWeight = Value
     
     if Value then
@@ -466,7 +466,7 @@ autoEquipToolsFolder:AddSwitch("Auto Weight", function(Value)
     end)
 end, "Auto Weight")
 
-autoEquipToolsFolder:AddSwitch("Auto Pushups", function(Value)
+autoEquipToolsFolder:AddSwitch("⚡ Auto Pushups", function(Value)
     _G.AutoPushups = Value
     
     if Value then
@@ -491,7 +491,7 @@ autoEquipToolsFolder:AddSwitch("Auto Pushups", function(Value)
     end)
 end, "Auto Pushups")
 
-autoEquipToolsFolder:AddSwitch("Auto Handstands", function(Value)
+autoEquipToolsFolder:AddSwitch("🤸‍♀️ Auto Handstands", function(Value)
     _G.AutoHandstands = Value
     
     if Value then
@@ -516,8 +516,9 @@ autoEquipToolsFolder:AddSwitch("Auto Handstands", function(Value)
     end)
 end, "Auto Handstands")
 
-autoEquipToolsFolder:AddSwitch("Auto Situps", function(Value)
+autoEquipToolsFolder:AddSwitch("🦵 Auto Situps", function(Value)
     _G.AutoSitups = Value
+
     
     if Value then
         local situpsTool = game.Players.LocalPlayer.Backpack:FindFirstChild("Situps")
@@ -541,7 +542,7 @@ autoEquipToolsFolder:AddSwitch("Auto Situps", function(Value)
     end)
 end, "Auto Abdominals")
 
-autoEquipToolsFolder:AddSwitch("Auto Punch", function(Value)
+autoEquipToolsFolder:AddSwitch("🥊 Auto Punch", function(Value)
     _G.fastHitActive = Value
     
     if Value then
@@ -588,7 +589,7 @@ autoEquipToolsFolder:AddSwitch("Auto Punch", function(Value)
     end
 end, "Auto Punch")
 
-autoEquipToolsFolder:AddSwitch("Fast Tools", function(Value)
+autoEquipToolsFolder:AddSwitch("⚡ Fast Tools", function(Value)
     _G.FastTools = Value
     
     local defaultSpeeds = {
@@ -669,7 +670,7 @@ local autoPunchNoAnim = false
 local targetDropdownItems = {}
 local availableTargets = {}
 
-Killer:AddSwitch("Auto Good Karma", function(bool)
+Killer:AddSwitch("😇 Auto Good Karma", function(bool)
     autoGoodKarma = bool
     task.spawn(function()
         while autoGoodKarma do
@@ -698,7 +699,7 @@ Killer:AddSwitch("Auto Good Karma", function(bool)
     end)
 end)
 
-Killer:AddSwitch("Auto Bad Karma", function(bool)
+Killer:AddSwitch("😈 Auto Bad Karma", function(bool)
     autoBadKarma = bool
     task.spawn(function()
         while autoBadKarma do
@@ -731,7 +732,7 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local friendWhitelistActive = false
 
-Killer:AddSwitch("Auto Whitelist Friends", function(state)
+Killer:AddSwitch("🛡️ Auto Whitelist Friends", function(state)
     friendWhitelistActive = state
 
     if state then
@@ -770,7 +771,7 @@ Killer:AddTextBox("UnWhitelist", function(text)
     end
 end)
 
-Killer:AddSwitch("Auto Kill", function(bool)
+Killer:AddSwitch("⚔️ Auto Kill", function(bool)
     autoKill = bool
 
     task.spawn(function()
@@ -851,7 +852,7 @@ Players.PlayerRemoving:Connect(function(player)
     end
 end)
 
-Killer:AddSwitch("Start Kill Target", function(state)
+Killer:AddSwitch("🎯 Start Kill Target", function(state)
     killTarget = state
 
     task.spawn(function()
@@ -915,7 +916,7 @@ Players.PlayerRemoving:Connect(function(player)
     end
 end)
 
-Killer:AddSwitch("View Player", function(bool)
+Killer:AddSwitch("👁️ View Player", function(bool)
     spying = bool
     if not spying then
         local cam = workspace.CurrentCamera
@@ -936,7 +937,7 @@ Killer:AddSwitch("View Player", function(bool)
     end)
 end)
 
-local button = Killer:AddButton("Remove Punch Anim", function()
+local button = Killer:AddButton("🚫 Remove Punch Anim", function()
     local blockedAnimations = {
         ["rbxassetid://3638729053"] = true,
         ["rbxassetid://3638767427"] = true,
@@ -1124,7 +1125,7 @@ function RecoveryPunch()
     end
 end
 
-Killer:AddButton("Recover Punch Anim", function()
+Killer:AddButton("🔄 Recover Punch Anim", function()
     RecoveryPunch()
 end)
 
@@ -1141,7 +1142,7 @@ Killer:AddSwitch("Auto Equip Punch", function(state)
 	end)
 end)
 
-Killer:AddSwitch("Auto Punch [No Animation]", function(state)
+Killer:AddSwitch("🥊 Auto Punch [No Animation]", function(state)
 	autoPunchNoAnim = state
 	task.spawn(function()
 		while autoPunchNoAnim do
@@ -1160,7 +1161,7 @@ Killer:AddSwitch("Auto Punch [No Animation]", function(state)
 	end)
 end)
 
-Killer:AddSwitch("Auto Punch", function(state)
+Killer:AddSwitch("🧨 Auto Punch", function(state)
 	_G.fastHitActive = state
 	if state then
 		task.spawn(function()
@@ -1192,7 +1193,7 @@ Killer:AddSwitch("Auto Punch", function(state)
 	end
 end)
 
-Killer:AddSwitch("Fast Punch", function(state)
+Killer:AddSwitch("⚡ Fast Punch", function(state)
 	_G.autoPunchActive = state
 	if state then
 		task.spawn(function()
@@ -1230,9 +1231,7 @@ local LocalPlayer = Players.LocalPlayer
 local killsShown = false
 local killsGui = nil
 
-local showKillsButton = Killer:AddButton("Kill Counter UI", function()
-	killsShown = not killsShown
-
+local showKillsButton = Killer:AddButton("📊 Kill Counter UI", function()
 	if killsShown then
 		if not killsGui then
 			killsGui = Instance.new("ScreenGui")
@@ -1421,7 +1420,7 @@ function gettool()
 end
 
 -- Hızlandırılmış Rock Switchleri
-Rock:AddSwitch("Tiny Rock 0", function(Value)
+Rock:AddSwitch("💎 Tiny Rock 0", function(Value)
     selectrock = "Tiny Island Rock"
     getgenv().autoFarm = Value
     task.spawn(function()
@@ -1446,7 +1445,7 @@ Rock:AddSwitch("Tiny Rock 0", function(Value)
     end)
 end)
 
-Rock:AddSwitch("Starter Rock 100", function(Value)
+Rock:AddSwitch("🔥 Starter Rock 100", function(Value)
     selectrock = "Starter Island Rock"
     getgenv().autoFarm = Value
     task.spawn(function()
@@ -1470,7 +1469,7 @@ Rock:AddSwitch("Starter Rock 100", function(Value)
     end)
 end)
 
-Rock:AddSwitch("Legend Beach Rock 5K", function(Value)
+Rock:AddSwitch("🏝️ Legend Beach Rock 5K", function(Value)
     selectrock = "Legend Beach Rock"
     getgenv().autoFarm = Value
     task.spawn(function()
@@ -1494,7 +1493,7 @@ Rock:AddSwitch("Legend Beach Rock 5K", function(Value)
     end)
 end)
 
-Rock:AddSwitch("Frozen Rock 150K", function(Value)
+Rock:AddSwitch("❄️ Frozen Rock 150K", function(Value)
     selectrock = "Frost Gym Rock"
     getgenv().autoFarm = Value
     task.spawn(function()
@@ -1518,7 +1517,7 @@ Rock:AddSwitch("Frozen Rock 150K", function(Value)
     end)
 end)
 
-Rock:AddSwitch("Mythical Rock 400K", function(Value)
+Rock:AddSwitch("✨ Mythical Rock 400K", function(Value)
     selectrock = "Mythical Gym Rock"
     getgenv().autoFarm = Value
     task.spawn(function()
@@ -1542,7 +1541,7 @@ Rock:AddSwitch("Mythical Rock 400K", function(Value)
     end)
 end)
 
-Rock:AddSwitch("Eternal Rock 750K", function(Value)
+Rock:AddSwitch("🌀 Eternal Rock 750K", function(Value)
     selectrock = "Eternal Gym Rock"
     getgenv().autoFarm = Value
     task.spawn(function()
@@ -1566,7 +1565,7 @@ Rock:AddSwitch("Eternal Rock 750K", function(Value)
     end)
 end)
 
-Rock:AddSwitch("Legend Rock 1M", function(Value)
+Rock:AddSwitch("🏆 Legend Rock 1M", function(Value)
     selectrock = "Legend Gym Rock"
     getgenv().autoFarm = Value
     task.spawn(function()
@@ -1590,7 +1589,7 @@ Rock:AddSwitch("Legend Rock 1M", function(Value)
     end)
 end)
 
-Rock:AddSwitch("Muscle King Rock 5M", function(Value)
+Rock:AddSwitch("👑 Muscle King Rock 5M", function(Value)
     selectrock = "Muscle King Gym Rock"
     getgenv().autoFarm = Value
     task.spawn(function()
@@ -1614,7 +1613,7 @@ Rock:AddSwitch("Muscle King Rock 5M", function(Value)
     end)
 end)
 
-Rock:AddSwitch("Jungle Rock 10M", function(Value)
+Rock:AddSwitch("🌳 Jungle Rock 10M", function(Value)
     selectrock = "Ancient Jungle Rock"
     getgenv().autoFarm = Value
     task.spawn(function()
