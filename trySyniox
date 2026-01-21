@@ -148,7 +148,7 @@ end
 -- Genel Farm Fonksiyonu
 local function startJungleFarm(toggleName, cframeValue, eventName)
     local active = false
-    jungleFolder:AddSwitch(toggleName, function(bool)
+    JungleFolder:AddSwitch(toggleName, function(bool)
         active = bool
         if bool then
             task.spawn(function()
