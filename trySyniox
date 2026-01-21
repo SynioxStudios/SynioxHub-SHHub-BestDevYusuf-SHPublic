@@ -185,12 +185,10 @@ local function manageTool(toolName)
             local character = LocalPlayer.Character
             if character then
                 local tool = LocalPlayer.Backpack:FindFirstChild(toolName) or character:FindFirstChild(toolName)
-                
                 if tool then
                     if tool.Parent ~= character then
                         tool.Parent = character
                     end
-                    
                     if toolName == "Punch" then
                         if tool:FindFirstChild("attackTime") then
                             tool.attackTime.Value = 0
@@ -211,7 +209,7 @@ local function manageTool(toolName)
     end)
 end
 
-toolFolder:AddSwitch("Weight + Punch", function(bool)
+toolFolder:AddSwitch("🏋️ Weight + 🥊 Punch", function(bool)
     _G.WeightOn = bool
     _G.PunchOn = bool
     if bool then 
@@ -221,6 +219,48 @@ toolFolder:AddSwitch("Weight + Punch", function(bool)
         local wTool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Weight")
         local pTool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Punch")
         if wTool then wTool.Parent = LocalPlayer.Backpack end
+        if pTool then pTool.Parent = LocalPlayer.Backpack end
+    end
+end)
+
+toolFolder:AddSwitch("💪 Pushups + 🥊 Punch", function(bool)
+    _G.PushupsOn = bool
+    _G.PunchOn = bool
+    if bool then 
+        manageTool("Pushups")
+        manageTool("Punch")
+    else
+        local pTool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Pushups")
+        local puTool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Punch")
+        if pTool then pTool.Parent = LocalPlayer.Backpack end
+        if puTool then puTool.Parent = LocalPlayer.Backpack end
+    end
+end)
+
+toolFolder:AddSwitch("🤸 Handstand + 🥊 Punch", function(bool)
+    _G.HandstandOn = bool
+    _G.PunchOn = bool
+    if bool then 
+        manageTool("Handstand")
+        manageTool("Punch")
+    else
+        local hTool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Handstand")
+        local pTool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Punch")
+        if hTool then hTool.Parent = LocalPlayer.Backpack end
+        if pTool then pTool.Parent = LocalPlayer.Backpack end
+    end
+end)
+
+toolFolder:AddSwitch("🧘 Situps + 🥊 Punch", function(bool)
+    _G.SitupsOn = bool
+    _G.PunchOn = bool
+    if bool then 
+        manageTool("Situps")
+        manageTool("Punch")
+    else
+        local sTool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Situps")
+        local pTool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Punch")
+        if sTool then sTool.Parent = LocalPlayer.Backpack end
         if pTool then pTool.Parent = LocalPlayer.Backpack end
     end
 end)
