@@ -2057,6 +2057,18 @@ task.spawn(function()
     end
 end)
 
+Misc:AddSwitch("Infinite Jump", function(state)
+    getgenv().InfiniteJump = state
+    game:GetService("UserInputService").JumpRequest:connect(function()
+        if getgenv().InfiniteJump then
+            local Humanoid = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if Humanoid then
+                Humanoid:ChangeState("Jumping")
+            end
+        end
+    end)
+end)
+
 Misc:AddSwitch("Auto Eat All (No Egg)", function(state)
     autoEatBoostsEnabled = state
 end)
