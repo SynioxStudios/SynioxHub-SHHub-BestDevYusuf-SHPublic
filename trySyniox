@@ -1866,116 +1866,112 @@ pets:AddButton("💥 Quick Evolve (10x)", function()
     end
 end)
 
-local TradeData = {SelectedPlayer = nil}
-local PetShopData = {
-    SelectedPet = nil,
-    PetList = {
-        "Neon Guardian",
-        "Blue Birdie",
-        "Blue Bunny",
-        "Blue Firecaster",
-        "Blue Pheonix",
-        "Crimson Falcon",
-        "Cybernetic Showdown Dragon",
-        "Dark Golem",
-        "Dark Legends Manticore",
-        "Dark Vampy",
-        "Darkstar Hunter",
-        "Eternal Strike Leviathan",
-        "Frostwave Legends Penguin",
-        "Gold Warrior",
-        "Golden Pheonix",
-        "Golden Viking",
-        "Green Butterfly",
-        "Green Firecaster",
-        "Infernal Dragon",
-        "Lightning Strike Phantom",
-        "Magic Butterfly",
-        "Muscle Sensei",
-        "Orange Hedgehog",
-        "Orange Pegasus",
-        "Phantom Genesis Dragon",
-        "Purple Dragon",
-        "Purple Falcon",
-        "Red Dragon",
-        "Red Firecaster",
-        "Red Kitty",
-        "Silver Dog",
-        "Ultimate Supernova Pegasus",
-        "Ultra Birdie",
-        "White Pegasus",
-        "White Pheonix",
-        "Yellow Butterfly"
-    }
-}
+local running = false
+local selectedTarget = nil
+local selectedPet = nil
 
-local playerDropdown4 = Tabs.Inventory:AddDropdown("Choose Player", function(name)
+pets:AddLabel("Trade System")
+pets:AddLabel("----------------------------")
+
+-- Oyuncu Seçimi (Çıkanlar silinmez, yeniler sona eklenir)
+local playerDropdown = pets:AddDropdown("Choose Player", function(name)
     local username = name:match(" | (.+)") or name
-    TradeData.SelectedPlayer = Services.Players:FindFirstChild(username)
+    selectedTarget = game:GetService("Players"):FindFirstChild(username)
 end)
 
-for _, player in ipairs(Services.Players:GetPlayers()) do
-    if player ~= Services.Players.LocalPlayer then
-        playerDropdown4:Add(player.DisplayName .. " | " .. player.Name)
+local function updatePlayerList(p)
+    if p ~= game:GetService("Players").LocalPlayer then
+        playerDropdown:Add(p.DisplayName .. " | " .. p.Name)
     end
 end
 
-Services.Players.PlayerAdded:Connect(function(player)
-    if player ~= Services.Players.LocalPlayer then
-        playerDropdown4:Add(player.DisplayName .. " | " .. player.Name)
-    end
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    updatePlayerList(player)
+end
+
+game:GetService("Players").PlayerAdded:Connect(updatePlayerList)
+
+pets:AddLabel("") 
+
+-- Pet Seçimi
+local petDropdown = pets:AddDropdown("Choose Pet", function(text) 
+    selectedPet = text 
 end)
 
-Services.Players.PlayerRemoving:Connect(function(player)
-    playerDropdown4:Remove(player.DisplayName .. " | " .. player.Name)
-    if TradeData.SelectedPlayer == player then TradeData.SelectedPlayer = nil end
-end)
+local petList = {
+    "Blue Birdie", "Orange Hedgehog", "Red Kitty", "Blue Bunny", "Silver Dog",
+    "Dark Vampy", "Dark Golem", "Green Butterfly", "Yellow Butterfly",
+    "Crimson Falcon", "Purple Dragon", "Orange Pegasus", "Purple Falcon", "Red Dragon",
+    "White Pegasus", "Frostwave Legends Penguin", "Phantom Genesis Dragon", "Eternal Strike Leviathan",
+    "Blue Pheonix", "Blue Firecaster", "Golden Pheonix", "Red Firecaster", "Green Firecaster",
+    "White Pheonix", "Dark Legends Manticore", "Ultimate Supernova Pegasus", "Lightning Strike Phantom", "Golden Viking",
+    "Infernal Dragon", "Ultra Birdie", "Magic Butterfly", "Aether Spirit Bunny",
+    "Cybernetic Showdown Dragon", "Darkstar Hunter", "Muscle Sensei", "Neon Guardian"
+}
 
-local petDropdown2 = Tabs.Inventory:AddDropdown("Choose Pet", function(text) PetShopData.SelectedPet = text end)
-for _, petName in ipairs(PetShopData.PetList) do petDropdown2:Add(petName) end
+for _, name in ipairs(petList) do 
+    petDropdown:Add(name) 
+end
 
-local running = false
+pets:AddLabel("")
 
-Tabs.Inventory:AddSwitch("Auto Trade", function(state)
+-- Auto Trade Başlatıcı
+pets:AddSwitch("Auto Trade", function(state)
     running = state
     if not state then return end
 
     task.spawn(function()
         while running do
-            if TradeData.SelectedPlayer and PetShopData.SelectedPet then
-                local tradingEvent = game.ReplicatedStorage.rEvents.tradingEvent
-                local unique = game.Players.LocalPlayer.petsFolder.Unique
+            if selectedTarget and selectedPet then
+                local tradingEvent = game:GetService("ReplicatedStorage").rEvents.tradingEvent
+                -- Senin kodundaki klasör yolu:
+                local uniqueFolder = game:GetService("Players").LocalPlayer:FindFirstChild("petsFolder") and game:GetService("Players").LocalPlayer.petsFolder:FindFirstChild("Unique")
 
-                tradingEvent:FireServer("sendTradeRequest", TradeData.SelectedPlayer)
+                if uniqueFolder then
+                    -- Trade İsteği At
+                    tradingEvent:FireServer("sendTradeRequest", selectedTarget)
+                    
+                    -- Pencerenin açılması için makul bir bekleme
+                    task.wait(1.5)
 
-                task.wait(0.5)
+                    local offered = 0
+                    local petsToOffer = uniqueFolder:GetChildren()
+                    
+                    for i = 1, #petsToOffer do
+                        local pet = petsToOffer[i]
+                        if not running then break end
 
-                local offered = 0
-                for _, pet in ipairs(unique:GetChildren()) do
-                    if not running then break end
+                        if pet.Name == selectedPet then
+                            -- Senin verdiğin offerItem eventi
+                            tradingEvent:FireServer("offerItem", pet)
+                            offered = offered + 1
+                            
+                            -- Eventler arasına senin istediğin o "düzeltilmiş" mesafeyi koydum
+                            task.wait(0.4) 
 
-                    if pet.Name == PetShopData.SelectedPet then
-                        tradingEvent:FireServer("offerItem", pet)
-                        offered = offered + 1
-                        task.wait(0.01)
-
-                        if offered >= 6 then
-                            break
+                            if offered >= 6 then -- Maksimum 6 pet koyar
+                                break
+                            end
                         end
                     end
-                end
 
-                task.wait(0.05)
+                    -- Onaylamadan önce kısa bir es ver
+                    task.wait(0.8)
 
-                if running then
-                    tradingEvent:FireServer("acceptTrade")
+                    if running then
+                        -- Senin verdiğin acceptTrade eventi
+                        tradingEvent:FireServer("acceptTrade")
+                    end
                 end
             end
-
-            task.wait(2)
+            -- Her trade döngüsü arası mola
+            task.wait(2.5)
         end
     end)
 end)
+
+pets:AddLabel("----------------------------")
+pets:AddLabel("Discord: https://discord.gg/FsG2cGay")
 
 local GymTab = window:AddTab("Gym")
 
