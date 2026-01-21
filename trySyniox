@@ -1938,15 +1938,23 @@ createFarm(FrostFolder, "🦵 Auto Squat", CFrame.new(-2720.66, 27.85, -590.72),
 local Misc = window:AddTab("Misc")
 
 Misc:AddButton("🚀 FPS Booster", function()
-    local Terrain = game:GetService("Workspace"):FindFirstChildOfClass('Terrain')
-    if Terrain then
-        Terrain.WaterWaveSize = 0
-        Terrain.WaterWaveSpeed = 0
-        Terrain.WaterReflectance = 0
+    local lighting = game:GetService("Lighting")
+    local terrain = game:GetService("Workspace"):FindFirstChildOfClass('Terrain')
+
+    -- Güneş ışığını ve gölgeleri hafiflet (Kapatmaz, sadece azaltır)
+    lighting.Brightness = 0.5
+    lighting.OutdoorAmbient = Color3.fromRGB(120, 120, 120)
+    lighting.Ambient = Color3.fromRGB(120, 120, 120)
+    lighting.ClockTime = 14
+
+    -- Su detaylarını optimize et
+    if terrain then
+        terrain.WaterWaveSize = 0
+        terrain.WaterWaveSpeed = 0
+        terrain.WaterReflectance = 0
     end
     
-    settings().Rendering.QualityLevel = 1
-    
+    -- Partikülleri ve gereksiz efektleri temizle
     for _, v in pairs(game:GetDescendants()) do
         if v:IsA("ParticleEmitter") or v:IsA("Trail") then
             v.Enabled = false
@@ -1957,7 +1965,7 @@ Misc:AddButton("🚀 FPS Booster", function()
 
     game:GetService("StarterGui"):SetCore("SendNotification", {
         Title = "Syniox Hub",
-        Text = "FPS Boosted! (Particles & Trails Cleaned)",
+        Text = "FPS Boosted & Lighting Balanced!",
         Duration = 3
     })
 end)
