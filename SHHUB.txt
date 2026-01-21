@@ -1867,9 +1867,13 @@ pets:AddButton("💥 Quick Evolve (10x)", function()
     end
 end)
 
+local pets = window:AddTab("Trade System")
+
 local running = false
 local selectedTarget = nil
 local selectedPet = nil
+local targetAmount = 0
+local totalSent = 0
 
 pets:AddLabel("----------------------------")
 pets:AddLabel("💎 Trade System")
@@ -1910,12 +1914,33 @@ for _, name in ipairs(petList) do
     petDropdown:Add(name) 
 end
 
+local counterLabel = pets:AddLabel("Status: Waiting...")
+
+pets:AddTextBox("Amount (Empty = Infinite)", function(text)
+    targetAmount = tonumber(text) or 0
+    if targetAmount > 0 then
+        counterLabel:SetText("Remaining: " .. targetAmount)
+    else
+        counterLabel:SetText("Mode: Infinite")
+    end
+end)
+
 pets:AddSwitch("Auto Trade", function(state)
     running = state
-    if not state then return end
+    totalSent = 0
+    if not state then 
+        counterLabel:SetText("Status: Stopped")
+        return 
+    end
 
     task.spawn(function()
         while running do
+            if targetAmount > 0 and totalSent >= targetAmount then 
+                counterLabel:SetText("Status: Completed!")
+                running = false
+                break 
+            end
+
             if selectedTarget and selectedPet then
                 local tradingEvent = game:GetService("ReplicatedStorage").rEvents.tradingEvent
                 local localPlayer = game:GetService("Players").LocalPlayer
@@ -1933,35 +1958,55 @@ pets:AddSwitch("Auto Trade", function(state)
                     tradingEvent:FireServer("sendTradeRequest", selectedTarget)
                     task.wait(1.5) 
 
-                    local offered = 0
+                    local offeredInThisTrade = 0
                     
                     for _, folder in ipairs(folders) do
-                        if folder and running and offered < 6 then
+                        if folder and running and offeredInThisTrade < 6 then
                             local petsToOffer = folder:GetChildren()
                             for i = 1, #petsToOffer do
                                 local pet = petsToOffer[i]
-                                if not running or offered >= 6 then break end
+                                if not running or offeredInThisTrade >= 6 then break end
+                                
+                                if targetAmount > 0 and (totalSent + offeredInThisTrade) >= targetAmount then
+                                    break
+                                end
 
                                 if pet.Name == selectedPet then
                                     tradingEvent:FireServer("offerItem", pet)
-                                    offered = offered + 1
-                                    task.wait(0.5) 
+                                    offeredInThisTrade = offeredInThisTrade + 1
+                                    task.wait(0.4) 
                                 end
                             end
                         end
                     end
 
-                    task.wait(1.2) 
-
-                    if running then
-                        tradingEvent:FireServer("acceptTrade")
+                    if offeredInThisTrade > 0 then
+                        task.wait(1)
+                        if running then
+                            tradingEvent:FireServer("acceptTrade")
+                            totalSent = totalSent + offeredInThisTrade
+                            
+                            if targetAmount > 0 then
+                                counterLabel:SetText("Remaining: " .. (targetAmount - totalSent))
+                            else
+                                counterLabel:SetText("Sent Total: " .. totalSent)
+                            end
+                        end
+                    else
+                        if targetAmount > 0 then
+                            counterLabel:SetText("Status: No more pets found!")
+                            running = false
+                            break
+                        end
                     end
                 end
             end
-            task.wait(2.5) 
+            task.wait(3) 
         end
     end)
 end)
+
+pets:AddLabel("----------------------------")
 
 local GymTab = window:AddTab("Gym")
 
