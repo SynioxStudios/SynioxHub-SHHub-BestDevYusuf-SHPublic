@@ -2289,6 +2289,20 @@ Misc:AddSwitch("🧱 Anti Knockback", function(Value)
     end
 end)
 
+Misc:AddTextBox("🏃 WalkSpeed", "Enter Speed (16-500)", function(v)
+    local speed = tonumber(v)
+    if speed then
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed
+    end
+end)
+
+Misc:AddTextBox("🚀 JumpPower", "Enter Power (50-1000)", function(v)
+    local power = tonumber(v)
+    if power then
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = power
+    end
+end)
+
 local teleport = window:AddTab("Teleport")
 
 teleport:AddButton("📍Spawn", function()
