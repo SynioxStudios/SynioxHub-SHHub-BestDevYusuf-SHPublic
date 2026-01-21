@@ -1866,6 +1866,117 @@ pets:AddButton("💥 Quick Evolve (10x)", function()
     end
 end)
 
+local TradeData = {SelectedPlayer = nil}
+local PetShopData = {
+    SelectedPet = nil,
+    PetList = {
+        "Neon Guardian",
+        "Blue Birdie",
+        "Blue Bunny",
+        "Blue Firecaster",
+        "Blue Pheonix",
+        "Crimson Falcon",
+        "Cybernetic Showdown Dragon",
+        "Dark Golem",
+        "Dark Legends Manticore",
+        "Dark Vampy",
+        "Darkstar Hunter",
+        "Eternal Strike Leviathan",
+        "Frostwave Legends Penguin",
+        "Gold Warrior",
+        "Golden Pheonix",
+        "Golden Viking",
+        "Green Butterfly",
+        "Green Firecaster",
+        "Infernal Dragon",
+        "Lightning Strike Phantom",
+        "Magic Butterfly",
+        "Muscle Sensei",
+        "Orange Hedgehog",
+        "Orange Pegasus",
+        "Phantom Genesis Dragon",
+        "Purple Dragon",
+        "Purple Falcon",
+        "Red Dragon",
+        "Red Firecaster",
+        "Red Kitty",
+        "Silver Dog",
+        "Ultimate Supernova Pegasus",
+        "Ultra Birdie",
+        "White Pegasus",
+        "White Pheonix",
+        "Yellow Butterfly"
+    }
+}
+
+local playerDropdown4 = Tabs.Inventory:AddDropdown("Choose Player", function(name)
+    local username = name:match(" | (.+)") or name
+    TradeData.SelectedPlayer = Services.Players:FindFirstChild(username)
+end)
+
+for _, player in ipairs(Services.Players:GetPlayers()) do
+    if player ~= Services.Players.LocalPlayer then
+        playerDropdown4:Add(player.DisplayName .. " | " .. player.Name)
+    end
+end
+
+Services.Players.PlayerAdded:Connect(function(player)
+    if player ~= Services.Players.LocalPlayer then
+        playerDropdown4:Add(player.DisplayName .. " | " .. player.Name)
+    end
+end)
+
+Services.Players.PlayerRemoving:Connect(function(player)
+    playerDropdown4:Remove(player.DisplayName .. " | " .. player.Name)
+    if TradeData.SelectedPlayer == player then TradeData.SelectedPlayer = nil end
+end)
+
+local petDropdown2 = Tabs.Inventory:AddDropdown("Choose Pet", function(text) PetShopData.SelectedPet = text end)
+for _, petName in ipairs(PetShopData.PetList) do petDropdown2:Add(petName) end
+
+local running = false
+
+Tabs.Inventory:AddSwitch("Auto Trade", function(state)
+    running = state
+    if not state then return end
+
+    task.spawn(function()
+        while running do
+            if TradeData.SelectedPlayer and PetShopData.SelectedPet then
+                local tradingEvent = game.ReplicatedStorage.rEvents.tradingEvent
+                local unique = game.Players.LocalPlayer.petsFolder.Unique
+
+                tradingEvent:FireServer("sendTradeRequest", TradeData.SelectedPlayer)
+
+                task.wait(0.5)
+
+                local offered = 0
+                for _, pet in ipairs(unique:GetChildren()) do
+                    if not running then break end
+
+                    if pet.Name == PetShopData.SelectedPet then
+                        tradingEvent:FireServer("offerItem", pet)
+                        offered = offered + 1
+                        task.wait(0.01)
+
+                        if offered >= 6 then
+                            break
+                        end
+                    end
+                end
+
+                task.wait(0.05)
+
+                if running then
+                    tradingEvent:FireServer("acceptTrade")
+                end
+            end
+
+            task.wait(2)
+        end
+    end)
+end)
+
 local GymTab = window:AddTab("Gym")
 
 local VIM = game:GetService("VirtualInputManager")
