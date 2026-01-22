@@ -937,6 +937,65 @@ Killer:AddSwitch("👁️ View Player", function(bool)
     end)
 end)
 
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local SelectedTarget = nil
+local IsFollowing = false
+local Connection = nil
+local DistanceBehind = 3
+
+local function GetPlayerNames()
+    local names = {}
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer then
+            table.insert(names, p.Name)
+        end
+    end
+    return names
+end
+
+local function StopFollow()
+    IsFollowing = false
+    if Connection then
+        Connection:Disconnect()
+        Connection = nil
+    end
+end
+
+local function StartFollow()
+    if not SelectedTarget or IsFollowing then return end
+    local targetPlayer = Players:FindFirstChild(SelectedTarget)
+    if not targetPlayer then return end
+
+    IsFollowing = true
+    Connection = RunService.Heartbeat:Connect(function()
+        if IsFollowing and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local targetHRP = targetPlayer.Character.HumanoidRootPart
+            local myCharacter = LocalPlayer.Character
+            if myCharacter and myCharacter:FindFirstChild("HumanoidRootPart") then
+                local targetPos = targetHRP.CFrame * CFrame.new(0, 0, DistanceBehind)
+                myCharacter.HumanoidRootPart.CFrame = targetPos
+            end
+        else
+            StopFollow()
+        end
+    end)
+end
+
+Killer:AddDropdown("👤 Select Player", GetPlayerNames(), function(Value)
+    SelectedTarget = Value
+end)
+
+Killer:AddButton("✅ Start", function()
+    StartFollow()
+end)
+
+Killer:AddButton("⛔ Stop", function()
+    StopFollow()
+end)
+
 local button = Killer:AddButton("🚫 Remove Punch Anim", function()
     local blockedAnimations = {
         ["rbxassetid://3638729053"] = true,
