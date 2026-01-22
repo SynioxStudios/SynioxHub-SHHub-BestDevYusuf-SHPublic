@@ -2017,20 +2017,18 @@ pets:AddSwitch("📫 Auto Trade", function(state)
                                 if pet.Name == selectedPet then
                                     tradingEvent:FireServer("offerItem", pet)
                                     offered = offered + 1
-                                    task.wait(0.5) 
+                                    task.wait(0.2) 
                                 end
                             end
                         end
                     end
-
-                    task.wait(1.2) 
 
                     if running then
                         tradingEvent:FireServer("acceptTrade")
                     end
                 end
             end
-            task.wait(2.5) 
+            task.wait(1.2) 
         end
     end)
 end)
