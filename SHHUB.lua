@@ -36,7 +36,7 @@ AutoFarm:AddSwitch("💪 Auto Farm (Equip Any tool)", function(state)
     end)
 end)
 
-local folder1 = AutoFarm:AddFolder("🧰 Tools")
+local folder1 = AutoFarm:AddFolder(" 💪 Tools")
 
 local function manageTool(toolName)
     task.spawn(function()
@@ -134,7 +134,7 @@ for _, loc in ipairs(Locations) do
     end)
 end
 
-local JungleFolder = AutoFarm:AddFolder("🌴 Jungle Gym")
+local JungleFolder = AutoFarm:AddFolder(" 🌴 Jungle Gym")
 
 local VIM = game:GetService("VirtualInputManager")
 local function pressEKey()
@@ -177,7 +177,7 @@ startJungleFarm("💢 Auto Boulder", CFrame.new(-8614.81, 51.90, 2677.37), "rep"
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-local toolFolder = AutoFarm:AddFolder("💨 Auto Tools")
+local toolFolder = AutoFarm:AddFolder(" 💨 OP Tools")
 
 local function manageTool(toolName)
     task.spawn(function()
@@ -425,7 +425,7 @@ rebirths:AddSwitch("👁️‍🗨️ Hide All Frames", function(bool)
     end
 end)
 
-local autoEquipToolsFolder = rebirths:AddFolder("Auto Equip Tools")
+local autoEquipToolsFolder = rebirths:AddFolder(" 🎒 Auto Equip Tools")
 
 autoEquipToolsFolder:AddButton("💎 Gamepass AutoLift", function()
     local gamepassFolder = game:GetService("ReplicatedStorage").gamepassIds
@@ -2071,34 +2071,34 @@ local function createFarm(folder, toggleName, cframeValue, eventName)
 end
 
 -- 1. JUNGLE GYM
-local JungleFolder = GymTab:AddFolder("Jungle Gym")
+local JungleFolder = GymTab:AddFolder(" 🌴 Jungle Gym")
 createFarm(JungleFolder, "🏋️ Auto Jungle Lift", CFrame.new(-8652.85, 45.22, 2088.99), "rep")
 createFarm(JungleFolder, "💪 Auto Bench Press", CFrame.new(-8173.23, 83.82, 1907.40), "rep")
 createFarm(JungleFolder, "🦵 Auto Squat", CFrame.new(-8377.55, 48.71, 2864.90), "rep")
 createFarm(JungleFolder, "Auto Boulder", CFrame.new(-8614.81, 51.90, 2677.37), "rep")
 
 -- 2. MUSCLE KING
-local MuscleKingFolder = GymTab:AddFolder("Muscle King")
+local MuscleKingFolder = GymTab:AddFolder(" 👑 Muscle King")
 createFarm(MuscleKingFolder, "🏋️ Auto Lift", CFrame.new(-8774.03, 52.15, -5664.10), "rep")
 createFarm(MuscleKingFolder, "💪 Auto Bench Press", CFrame.new(-8589.43, 58.00, -6044.57), "rep")
 createFarm(MuscleKingFolder, "🦵 Auto Squat", CFrame.new(-8759.62, 46.50, -6041.16), "rep")
 createFarm(MuscleKingFolder, "Auto Boulder", CFrame.new(-8942.97, 60.71, -5692.74), "rep")
 
 -- 3. LEGENDS GYM
-local LegendsFolder = GymTab:AddFolder("Legends Gym")
+local LegendsFolder = GymTab:AddFolder(" 🌟 Legends Gym")
 createFarm(LegendsFolder, "🏋️ Auto Lift", CFrame.new(4532.02, 1025.80, -4002.15), "rep")
 createFarm(LegendsFolder, "💪 Auto Bench Press", CFrame.new(4109.20, 1035.67, -3802.88), "rep")
 createFarm(LegendsFolder, "🦵 Auto Squat", CFrame.new(4438.74, 1021.38, -4058.46), "rep")
 createFarm(LegendsFolder, "Auto Boulder", CFrame.new(4188.75, 1019.85, -3905.19), "rep")
 
 -- 4. MYTHICAL GYM
-local MythicalFolder = GymTab:AddFolder("Mythical Gym")
+local MythicalFolder = GymTab:AddFolder(" 🫟 Mythical Gym")
 createFarm(MythicalFolder, "🏋️ Auto Lift", CFrame.new(2486.75, 31.91, 847.89), "rep")
 createFarm(MythicalFolder, "💪 Auto Bench Press", CFrame.new(2370.74, 57.09, 1243.37), "rep")
 createFarm(MythicalFolder, "Auto Boulder", CFrame.new(2667.31, 58.88, 1202.46), "rep")
 
 -- 5. FROST GYM
-local FrostFolder = GymTab:AddFolder("Frost Gym")
+local FrostFolder = GymTab:AddFolder(" ❄️ Frost Gym")
 createFarm(FrostFolder, "🏋️ Auto Lift", CFrame.new(-2917.62, 42.60, -211.29), "rep")
 createFarm(FrostFolder, "💪 Auto Bench Press", CFrame.new(-3022.97, 41.31, -197.51), "rep")
 createFarm(FrostFolder, "🦵 Auto Squat", CFrame.new(-2720.66, 27.85, -590.72), "rep")
@@ -2109,20 +2109,17 @@ Misc:AddButton("🚀 FPS Booster", function()
     local lighting = game:GetService("Lighting")
     local terrain = game:GetService("Workspace"):FindFirstChildOfClass('Terrain')
 
-    -- Güneş ışığını ve gölgeleri hafiflet (Kapatmaz, sadece azaltır)
     lighting.Brightness = 0.5
     lighting.OutdoorAmbient = Color3.fromRGB(120, 120, 120)
     lighting.Ambient = Color3.fromRGB(120, 120, 120)
     lighting.ClockTime = 14
 
-    -- Su detaylarını optimize et
     if terrain then
         terrain.WaterWaveSize = 0
         terrain.WaterWaveSpeed = 0
         terrain.WaterReflectance = 0
     end
     
-    -- Partikülleri ve gereksiz efektleri temizle
     for _, v in pairs(game:GetDescendants()) do
         if v:IsA("ParticleEmitter") or v:IsA("Trail") then
             v.Enabled = false
@@ -2142,7 +2139,6 @@ Misc:AddSwitch("⏳ Anti Afk", function(Value)
     if Value then
         _G.AntiAfkActive = true
         
-        -- Anti-AFK Mekanizması
         local vu = game:GetService("VirtualUser")
         antiAfkConnection = game:GetService("Players").LocalPlayer.Idled:Connect(function()
             if _G.AntiAfkActive then
@@ -2151,7 +2147,6 @@ Misc:AddSwitch("⏳ Anti Afk", function(Value)
             end
         end)
 
-        -- GUI Oluşturma
         local ScreenGui = Instance.new("ScreenGui")
         local MainFrame = Instance.new("Frame")
         local UICorner = Instance.new("UICorner")
@@ -2210,26 +2205,22 @@ Misc:AddSwitch("⏳ Anti Afk", function(Value)
         SetupLabel(FPSLabel, "🚀 FPS: 0", UDim2.new(0, 0, 0, 62))
         SetupLabel(MSLabel, "📡 MS: 0", UDim2.new(0, 0, 0, 89))
 
-        -- Güncelleme Döngüsü (Geliştirilmiş)
         local startTime = os.time()
         local RunService = game:GetService("RunService")
         local Stats = game:GetService("Stats")
         
         task.spawn(function()
             while _G.AntiAfkActive do
-                -- Zaman hesaplama
                 local diff = os.time() - startTime
                 TimerLabel.Text = string.format("⏳ Time: %02d:%02d:%02d", math.floor(diff/3600), math.floor((diff%3600)/60), diff%60)
                 
-                -- FPS Hesaplama (RenderStepped ile en doğru sonucu verir)
                 local fps = math.floor(1 / RunService.RenderStepped:Wait())
                 FPSLabel.Text = "🚀 FPS: " .. fps
                 
-                -- Ping (MS) Hesaplama
                 local ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
                 MSLabel.Text = "📡 MS: " .. ping
                 
-                task.wait(0.5) -- Her yarım saniyede bir güncelle (Performans için)
+                task.wait(0.5)
             end
         end)
 
@@ -2300,7 +2291,7 @@ timeDropdown:Add("Night")
 timeDropdown:Add("Day")
 timeDropdown:Add("Midnight")
 
-local scriptFolder = Misc:AddFolder("📜 External Scripts")
+local scriptFolder = Misc:AddFolder(" 📜 External Scripts")
 
 scriptFolder:AddButton("⚡ Infinite Yield", function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
@@ -2419,7 +2410,7 @@ Misc:AddButton("🔄 Rejoin Game", function()
 
     YesButton.Name = "YesButton"
     YesButton.Parent = Frame
-    YesButton.BackgroundColor3 = Color3.fromRGB(0, 150, 0) -- SUCCESS butonundaki yeşil tonu
+    YesButton.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
     YesButton.Position = UDim2.new(0, 25, 0, 90)
     YesButton.Size = UDim2.new(0, 85, 0, 35)
     YesButton.Font = Enum.Font.GothamBold
@@ -2430,7 +2421,7 @@ Misc:AddButton("🔄 Rejoin Game", function()
 
     NoButton.Name = "NoButton"
     NoButton.Parent = Frame
-    NoButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0) -- GET KEY butonundaki kırmızı tonu
+    NoButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
     NoButton.Position = UDim2.new(0, 140, 0, 90)
     NoButton.Size = UDim2.new(0, 85, 0, 35)
     NoButton.Font = Enum.Font.GothamBold
