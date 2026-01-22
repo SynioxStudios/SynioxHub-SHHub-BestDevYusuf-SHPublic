@@ -36,7 +36,7 @@ AutoFarm:AddSwitch("💪 Auto Farm (Equip Any tool)", function(state)
     end)
 end)
 
-local folder1 = AutoFarm:AddFolder("Tools")
+local folder1 = AutoFarm:AddFolder("🧰 Tools")
 
 local function manageTool(toolName)
     task.spawn(function()
@@ -117,7 +117,7 @@ local function stopAll()
     VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.W, false, game)
 end
 
-local FarmFolder = AutoFarm:AddFolder("Treadmill")
+local FarmFolder = AutoFarm:AddFolder(" ⚡ Treadmill")
 
 for _, loc in ipairs(Locations) do
     FarmFolder:AddSwitch(loc.name, function(bool)
@@ -134,7 +134,7 @@ for _, loc in ipairs(Locations) do
     end)
 end
 
-local JungleFolder = AutoFarm:AddFolder("Jungle Gym")
+local JungleFolder = AutoFarm:AddFolder("🌴 Jungle Gym")
 
 local VIM = game:GetService("VirtualInputManager")
 local function pressEKey()
@@ -177,7 +177,7 @@ startJungleFarm("💢 Auto Boulder", CFrame.new(-8614.81, 51.90, 2677.37), "rep"
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-local toolFolder = AutoFarm:AddFolder("Auto Tools")
+local toolFolder = AutoFarm:AddFolder("💨 Auto Tools")
 
 local function manageTool(toolName)
     task.spawn(function()
