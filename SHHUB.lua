@@ -2659,11 +2659,19 @@ credits:AddLabel(" ")
 credits:AddLabel("==================================")
 
 local bigTitle = credits:AddLabel("🚀 SYNIOX HUB V2 🚀")
-bigTitle.TextColor3 = Color3.fromRGB(255, 255, 0)
 
 pcall(function()
     bigTitle.TextSize = 25
     bigTitle.Font = Enum.Font.GothamBold
+end)
+
+task.spawn(function()
+    while true do
+        for i = 0, 1, 0.005 do
+            bigTitle.TextColor3 = Color3.fromHSV(i, 1, 1)
+            task.wait()
+        end
+    end
 end)
 
 credits:AddLabel("==================================")
