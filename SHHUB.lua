@@ -2212,26 +2212,29 @@ local Misc = window:AddTab("Misc")
 local function claimChests()
     local lp = game:GetService("Players").LocalPlayer
     local char = lp.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
-        local oldCF = char.HumanoidRootPart.CFrame
+    local root = char and char:FindFirstChild("HumanoidRootPart")
+    
+    if root then
         local chests = {
-            Vector3.new(42.25, 3.64, 408.91),    
-            Vector3.new(-138.43, 3.64, -276.86), 
-            Vector3.new(-2569.81, 3.64, -554.07),
-            Vector3.new(2206.88, 3.64, 910.50),  
-            Vector3.new(-6713.64, 3.64, -1456.67),
-            Vector3.new(4666.53, 997.35, -3692.08),
-            Vector3.new(-7913.11, 0.61, 3019.15) 
+            Vector3.new(42.25, 1.5, 408.91),    
+            Vector3.new(-138.43, 1.5, -276.86), 
+            Vector3.new(-2569.81, 1.5, -554.07),
+            Vector3.new(2206.88, 1.5, 910.50),  
+            Vector3.new(-6713.64, 1.5, -1456.67),
+            Vector3.new(4666.53, 995.0, -3692.08),
+            Vector3.new(-7913.11, -1.5, 3019.15) 
         }
         for _, pos in ipairs(chests) do
-            char.HumanoidRootPart.CFrame = CFrame.new(pos)
-            task.wait(0.2)
+            pcall(function()
+                firetouchinterest(root, pos, 1)
+                task.wait(0.1)
+                firetouchinterest(root, pos, 0)
+            end)
         end
-        char.HumanoidRootPart.CFrame = oldCF
     end
 end
 
-Misc:AddButton("📦 Auto Claim Chest", function()
+AutoFarm:AddButton("📦 Auto Claim Chest", function()
     claimChests()
 end)
 
