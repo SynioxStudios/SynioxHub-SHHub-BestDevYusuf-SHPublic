@@ -2880,6 +2880,54 @@ Misc:AddSwitch("🧱 Anti Knockback", function(Value)
     end
 end)
 
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local noclipEnabled = false
+local noclipConnection = nil
+
+local function startNoclip()
+    if noclipConnection then noclipConnection:Disconnect() end
+    
+    noclipConnection = RunService.Stepped:Connect(function()
+        if noclipEnabled and player.Character then
+            for _, part in pairs(player.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end
+    end)
+end
+
+Misc:AddSwitch("👻 No Clip", function(bool)
+    noclipEnabled = bool
+    
+    if noclipEnabled then
+        startNoclip()
+    else
+        if noclipConnection then
+            noclipConnection:Disconnect()
+            noclipConnection = nil
+        end
+        
+        if player.Character then
+            for _, part in pairs(player.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
+            end
+        end
+    end
+end)
+
+player.CharacterAdded:Connect(function()
+    if noclipEnabled then
+        task.wait(0.1)
+        startNoclip()
+    end
+end)
+
 local teleport = window:AddTab("Teleport")
 
 teleport:AddButton("📍Spawn", function()
