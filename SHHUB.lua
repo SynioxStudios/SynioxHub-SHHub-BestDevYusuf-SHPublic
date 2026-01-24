@@ -1904,7 +1904,7 @@ tabFarming:AddSwitch("🔄 Auto Rebirth Farm", function(bool)
                 for i = 1, 12 do 
                     muscleEvent:FireServer("rep")
                 end
-                task.wait()
+                task.wait(0.01)
             end
             if not isRunning then break end
             unequipAllPets()
@@ -1937,12 +1937,12 @@ tabFarming:AddSwitch("💢 Auto Strength Farm", function(bool)
     task.spawn(function()
         unequipAllPets()
         task.wait(0.1)
-        equipUniquePet("Swift Samurai")
+        equipUniquePets("Swift Samurai")
         while strengthOnly do
-            for i = 1, 12 do 
+            for i = 1, 23 do 
                 muscleEvent:FireServer("rep")
             end
-            task.wait()
+            task.wait(0.01)
         end
     end)
 end)
