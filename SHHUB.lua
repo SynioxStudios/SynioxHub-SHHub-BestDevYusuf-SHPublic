@@ -1837,9 +1837,11 @@ end
 
 local function equipUniquePet(name)
     if player:FindFirstChild("petsFolder") and player.petsFolder:FindFirstChild("Unique") then
-        local pet = player.petsFolder.Unique:FindFirstChild(name)
-        if pet then
-            rEvents.equipPetEvent:FireServer("equipPet", pet)
+        for _, pet in pairs(player.petsFolder.Unique:GetChildren()) do
+            if pet.Name == name then
+                rEvents.equipPetEvent:FireServer("equipPet", pet)
+                task.wait(0.01) 
+            end
         end
     end
 end
@@ -1938,13 +1940,6 @@ tabFarming:AddSwitch("💢 Auto Strength Farm", function(bool)
         unequipAllPets()
         task.wait(0.1)
         equipUniquePet("Swift Samurai")
-		equipUniquePet("Swift Samurai")
-		equipUniquePet("Swift Samurai")
-		equipUniquePet("Swift Samurai")
-		equipUniquePet("Swift Samurai")
-		equipUniquePet("Swift Samurai")
-		equipUniquePet("Swift Samurai")
-		equipUniquePet("Swift Samurai")
         while strengthOnly do
             for i = 1, 23 do 
                 muscleEvent:FireServer("rep")
