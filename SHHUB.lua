@@ -1753,7 +1753,7 @@ Rock:AddSwitch("❄️ Frozen Rock 150K", function(Value)
     end)
 end)
 
-Rock:AddSwitch("✨ Mythical Rock 400K", function(Value)
+Rock:AddSwitch("🔮 Mythical Rock 400K", function(Value)
     selectrock = "Mythical Gym Rock"
     getgenv().autoFarm = Value
     task.spawn(function()
@@ -2404,7 +2404,7 @@ pets:AddSwitch("📫 Auto Trade", function(state)
                                 if pet.Name == selectedPet then
                                     tradingEvent:FireServer("offerItem", pet)
                                     offered = offered + 1
-                                    task.wait(0.2) 
+                                    task.wait(0.1) 
                                 end
                             end
                         end
@@ -2415,7 +2415,7 @@ pets:AddSwitch("📫 Auto Trade", function(state)
                     end
                 end
             end
-            task.wait(1.2) 
+            task.wait(1.1) 
         end
     end)
 end)
