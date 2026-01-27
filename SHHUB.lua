@@ -1725,7 +1725,7 @@ Rock:AddSwitch("❄️ Frozen Rock 150K", function(Value)
     end)
 end)
 
-Rock:AddSwitch("🔮 Mythical Rock 400K", function(Value)
+Rock:AddSwitch("✨ Mythical Rock 400K", function(Value)
     selectrock = "Mythical Gym Rock"
     getgenv().autoFarm = Value
     task.spawn(function()
@@ -2469,6 +2469,7 @@ local function claimChests()
     local root = char and char:FindFirstChild("HumanoidRootPart")
     
     if root then
+        local oldCF = root.CFrame
         local chests = {
             Vector3.new(42.25, 1.5, 408.91),    
             Vector3.new(-138.43, 1.5, -276.86), 
@@ -2478,17 +2479,16 @@ local function claimChests()
             Vector3.new(4666.53, 995.0, -3692.08),
             Vector3.new(-7913.11, -1.5, 3019.15) 
         }
+        
         for _, pos in ipairs(chests) do
-            pcall(function()
-                firetouchinterest(root, pos, 1)
-                task.wait(0.1)
-                firetouchinterest(root, pos, 0)
-            end)
+            root.CFrame = CFrame.new(pos)
+            task.wait(0.15) -- Sandığın dokunuşu algılaması için şart
         end
+        root.CFrame = oldCF
     end
 end
 
-AutoFarm:AddButton("📦 Auto Claim Chest", function()
+Misc:AddButton("📦 Auto Claim Chest", function()
     claimChests()
 end)
 
