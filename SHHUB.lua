@@ -183,23 +183,35 @@ local function manageToolCombo(toolName)
     task.spawn(function()
         while _G[toolName.."On"] do
             local character = LocalPlayer.Character
-            if character then
+            local hum = character and character:FindFirstChildOfClass("Humanoid")
+            
+            if character and hum then
                 local punch = LocalPlayer.Backpack:FindFirstChild("Punch") or character:FindFirstChild("Punch")
                 local tool = LocalPlayer.Backpack:FindFirstChild(toolName) or character:FindFirstChild(toolName)
 
                 if punch then
-                    punch.Parent = character
-                    if punch:FindFirstChild("attackTime") then punch.attackTime.Value = 0 end
+                    if punch.Parent ~= character then
+                        hum:EquipTool(punch)
+                    end
+                    if punch:FindFirstChild("attackTime") then 
+                        punch.attackTime.Value = 0 
+                    end
                     punch:Activate()
                 end
 
                 if tool then
-                    tool.Parent = character
+                    if tool.Parent ~= character then
+                        hum:EquipTool(tool)
+                    end
+                    
                     local event = LocalPlayer:FindFirstChild("muscleEvent")
-                    if event then event:FireServer("rep") end
+                    if event then 
+                        event:FireServer("rep") 
+                    end
+                    tool:Activate()
                 end
             end
-            task.wait() 
+            task.wait(0.01)
         end
     end)
 end
