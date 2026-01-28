@@ -501,61 +501,35 @@ rebirths:AddSwitch("👁️‍🗨️ Hide All Frames", function(bool)
     end
 end)
 
-if _G.MarketLoaded then return end
-_G.MarketLoaded = true
-
-local selectedItemInternal = nil
-local selectedItemDisplay = ""
+local selectedUltimate = nil
 local autoBuyActive = false
+local ultimateRemote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("ultimatesRemote")
 
-local shopItems = {
-    ["+5% Rep Speed"] = "RepSpeed",
-    ["+1 Pet Slot"] = "PetSlot",
-    ["+10 Item Capacity"] = "ItemCapacity",
-    ["+1 Daily Spin"] = "DailySpin",
-    ["x2 Chest Rewards"] = "ChestRewards",
-    ["x2 Quest Rewards"] = "QuestRewards",
-    ["Muscle Mind"] = "MuscleMind",
-    ["Jungle Swift"] = "JungleSwift",
-    ["Infernal Health"] = "InfernalHealth",
-    ["Galaxy Gains"] = "GalaxyGains",
-    ["Demon Damage"] = "DemonDamage",
-    ["Golden Rebirth"] = "GoldenRebirth"
-}
-
-local marketDropdown = rebirths:AddDropdown("📦 Select Item", function(name)
-    selectedItemDisplay = name
-    selectedItemInternal = shopItems[name]
+local upgradeDropdown = rebirths:AddDropdown("📦 Select Ultımate", function(choice)
+    selectedUltimate = choice
 end)
 
-for displayName, _ in pairs(shopItems) do
-    marketDropdown:Add(displayName)
+local items = {
+    "RepSpeed", "PetSlot", "ItemCapacity", "DailySpin", 
+    "ChestRewards", "QuestRewards", "MuscleMind", "JungleSwift", 
+    "InfernalHealth", "GalaxyGains", "DemonDamage", "GoldenRebirth"
+}
+
+for _, itemName in ipairs(items) do
+    upgradeDropdown:Add(itemName)
 end
 
 rebirths:AddSwitch("🔄 Auto Buy Selected", function(state)
     autoBuyActive = state
     if autoBuyActive then
-        if not selectedItemInternal then
-            game:GetService("StarterGui"):SetCore("SendNotification", {
-                Title = "ERROR",
-                Text = "Please select an item first!",
-                Duration = 3
-            })
-            return
-        end
-
         task.spawn(function()
-            game:GetService("StarterGui"):SetCore("SendNotification", {
-                Title = "AUTO BUY",
-                Text = "Waiting for requirements for: " .. selectedItemDisplay,
-                Duration = 3
-            })
-
             while autoBuyActive do
-                pcall(function()
-                    game:GetService("ReplicatedStorage").rEvents.ultimatesRemote:InvokeServer("upgradeUltimate", selectedItemInternal)
-                end)
-                task.wait(1)
+                if selectedUltimate then
+                    pcall(function()
+                        ultimateRemote:InvokeServer("upgradeUltimate", selectedUltimate)
+                    end)
+                end
+                task.wait(0.5)
             end
         end)
     end
