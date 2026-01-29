@@ -1479,102 +1479,109 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 
-Gift:AddLabel("🎁 Gifting System")
+_G.GiftTab = window:AddTab("Gift")
+_G.Players = game:GetService("Players")
+_G.ReplicatedStorage = game:GetService("ReplicatedStorage")
+_G.LocalPlayer = _G.Players.LocalPlayer
 
-local proteinEggLabel = Gift:AddLabel("Protein Eggs: 0")
-local tropicalShakeLabel = Gift:AddLabel("Tropical Shakes: 0")
+_G.GiftTab:AddLabel("🎁 Gifting System")
 
-local selectedEggPlayer = nil
-local eggCount = 0
-local selectedShakePlayer = nil
-local shakeCount = 0
+_G.ProteinEggLabel = _G.GiftTab:AddLabel("Protein Eggs: 0")
+_G.TropicalShakeLabel = _G.GiftTab:AddLabel("Tropical Shakes: 0")
 
--- Oyuncu seçim dropdownları
-local eggDropdown = Gift:AddDropdown("Player to Gift Eggs", function(selectedDisplayName)
-    for _, plr in ipairs(Players:GetPlayers()) do
+_G.SelectedEggPlayer = nil
+_G.EggCountAmount = 0
+_G.SelectedShakePlayer = nil
+_G.ShakeCountAmount = 0
+
+-- Dropdownlar
+_G.EggDropdown = _G.GiftTab:AddDropdown("Player to Gift Eggs", function(selectedDisplayName)
+    for _, plr in ipairs(_G.Players:GetPlayers()) do
         if plr.DisplayName == selectedDisplayName then
-            selectedEggPlayer = plr
+            _G.SelectedEggPlayer = plr
             break
         end
     end
 end)
 
-local shakeDropdown = Gift:AddDropdown("Player to Gift Tropical Shakes", function(selectedDisplayName)
-    for _, plr in ipairs(Players:GetPlayers()) do
+_G.ShakeDropdown = _G.GiftTab:AddDropdown("Player to Gift Tropical Shakes", function(selectedDisplayName)
+    for _, plr in ipairs(_G.Players:GetPlayers()) do
         if plr.DisplayName == selectedDisplayName then
-            selectedShakePlayer = plr
+            _G.SelectedShakePlayer = plr
             break
         end
     end
 end)
 
--- Dropdown listesini güncel tutan fonksiyon
-local function updateDropdowns()
-    eggDropdown:Clear()
-    shakeDropdown:Clear()
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer then
-            eggDropdown:Add(plr.DisplayName)
-            shakeDropdown:Add(plr.DisplayName)
+-- Global Dropdown Güncelleme Fonksiyonu
+_G.UpdateAllGiftDropdowns = function()
+    _G.EggDropdown:Clear()
+    _G.ShakeDropdown:Clear()
+    for _, plr in ipairs(_G.Players:GetPlayers()) do
+        if plr ~= _G.LocalPlayer then
+            _G.EggDropdown:Add(plr.DisplayName)
+            _G.ShakeDropdown:Add(plr.DisplayName)
         end
     end
 end
 
-updateDropdowns()
-Players.PlayerAdded:Connect(updateDropdowns)
-Players.PlayerRemoving:Connect(updateDropdowns)
+_G.UpdateAllGiftDropdowns()
+_G.Players.PlayerAdded:Connect(_G.UpdateAllGiftDropdowns)
+_G.Players.PlayerRemoving:Connect(_G.UpdateAllGiftDropdowns)
 
--- Protein Egg Hediye Kısmı
-Gift:AddTextBox("Amount of Eggs", function(text)
-    eggCount = tonumber(text) or 0
+-- Protein Egg İşlemleri
+_G.GiftTab:AddTextBox("Amount of Eggs", function(text)
+    _G.EggCountAmount = tonumber(text) or 0
 end)
 
-Gift:AddButton("Gift Eggs", function()
-    if selectedEggPlayer and eggCount > 0 then
-        for i = 1, eggCount do
-            local egg = LocalPlayer.consumablesFolder:FindFirstChild("Protein Egg")
-            if egg then
-                ReplicatedStorage.rEvents.giftRemote:InvokeServer("giftRequest", selectedEggPlayer, egg)
+_G.GiftTab:AddButton("Gift Eggs", function()
+    if _G.SelectedEggPlayer and _G.EggCountAmount > 0 then
+        for i = 1, _G.EggCountAmount do
+            _G.CurrentEgg = _G.LocalPlayer.consumablesFolder:FindFirstChild("Protein Egg")
+            if _G.CurrentEgg then
+                _G.ReplicatedStorage.rEvents.giftRemote:InvokeServer("giftRequest", _G.SelectedEggPlayer, _G.CurrentEgg)
                 task.wait(0.1)
             end
         end
     end
 end)
 
--- Tropical Shake Hediye Kısmı
-Gift:AddTextBox("Amount of Shakes", function(text)
-    shakeCount = tonumber(text) or 0
+-- Tropical Shake İşlemleri
+_G.GiftTab:AddTextBox("Amount of Shakes", function(text)
+    _G.ShakeCountAmount = tonumber(text) or 0
 end)
 
-Gift:AddButton("Gift Tropical Shakes", function()
-    if selectedShakePlayer and shakeCount > 0 then
-        for i = 1, shakeCount do
-            local shake = LocalPlayer.consumablesFolder:FindFirstChild("Tropical Shake")
-            if shake then
-                ReplicatedStorage.rEvents.giftRemote:InvokeServer("giftRequest", selectedShakePlayer, shake)
+_G.GiftTab:AddButton("Gift Tropical Shakes", function()
+    if _G.SelectedShakePlayer and _G.ShakeCountAmount > 0 then
+        for i = 1, _G.ShakeCountAmount do
+            _G.CurrentShake = _G.LocalPlayer.consumablesFolder:FindFirstChild("Tropical Shake")
+            if _G.CurrentShake then
+                _G.ReplicatedStorage.rEvents.giftRemote:InvokeServer("giftRequest", _G.SelectedShakePlayer, _G.CurrentShake)
                 task.wait(0.1)
             end
         end
     end
 end)
 
--- Sayaç Döngüsü (Sadece Çantayı Sayar)
+-- Global Sayaç Döngüsü
 task.spawn(function()
     while true do
-        local pCount = 0
-        local sCount = 0
-        for _, item in ipairs(LocalPlayer.Backpack:GetChildren()) do
-            if item.Name == "Protein Egg" then pCount = pCount + 1
-            elseif item.Name == "Tropical Shake" then sCount = sCount + 1 end
+        _G.PCountInner = 0
+        _G.SCountInner = 0
+        if _G.LocalPlayer:FindFirstChild("Backpack") then
+            for _, item in ipairs(_G.LocalPlayer.Backpack:GetChildren()) do
+                if item.Name == "Protein Egg" then 
+                    _G.PCountInner = _G.PCountInner + 1
+                elseif item.Name == "Tropical Shake" then 
+                    _G.SCountInner = _G.SCountInner + 1 
+                end
+            end
         end
-        proteinEggLabel.Text = "Protein Eggs: " .. pCount
-        tropicalShakeLabel.Text = "Tropical Shakes: " .. sCount
+        _G.ProteinEggLabel.Text = "Protein Eggs: " .. _G.PCountInner
+        _G.TropicalShakeLabel.Text = "Tropical Shakes: " .. _G.SCountInner
         task.wait(0.5)
     end
 end)
-
-Gift:AddLabel("----------------------------")
-Gift:AddLabel("Discord: https://discord.gg/FsG2cGay")
 
 local LookDura = window:AddTab("Stats")
 local SelectPlayerName = ""
