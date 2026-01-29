@@ -350,8 +350,8 @@ rebirths:AddTextBox("🔢 Rebirth Target", function(text)
         updateStats() 
         
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Objetivo Actualizado",
-            Text = "Nuevo objetivo: " .. tostring(targetRebirthValue) .. " renacimientos",
+            Title = "Updated Goal",
+            Text = "New goal: " .. tostring(targetRebirthValue) .. " rebirths",
             Duration = 0
         })
     else
@@ -2361,7 +2361,7 @@ pets:AddSwitch("📫 Auto Trade", function(state)
                     end
                 end
             end
-            task.wait(1.1) 
+            task.wait(1) 
         end
     end)
 end)
@@ -2414,17 +2414,17 @@ local MuscleKingFolder = GymTab:AddFolder(" 👑 Muscle King")
 createFarm(MuscleKingFolder, "🏋️ Auto Lift", CFrame.new(-8774.03, 52.15, -5664.10), "rep")
 createFarm(MuscleKingFolder, "💪 Auto Bench Press", CFrame.new(-8589.43, 58.00, -6044.57), "rep")
 createFarm(MuscleKingFolder, "🦵 Auto Squat", CFrame.new(-8759.62, 46.50, -6041.16), "rep")
-createFarm(MuscleKingFolder, "Auto Boulder", CFrame.new(-8942.97, 60.71, -5692.74), "rep")
+createFarm(MuscleKingFolder, "🗿 Auto Boulder", CFrame.new(-8942.97, 60.71, -5692.74), "rep")
 
 -- 3. LEGENDS GYM
 local LegendsFolder = GymTab:AddFolder(" 🌟 Legends Gym")
 createFarm(LegendsFolder, "🏋️ Auto Lift", CFrame.new(4532.02, 1025.80, -4002.15), "rep")
 createFarm(LegendsFolder, "💪 Auto Bench Press", CFrame.new(4109.20, 1035.67, -3802.88), "rep")
 createFarm(LegendsFolder, "🦵 Auto Squat", CFrame.new(4438.74, 1021.38, -4058.46), "rep")
-createFarm(LegendsFolder, "Auto Boulder", CFrame.new(4188.75, 1019.85, -3905.19), "rep")
+createFarm(LegendsFolder, "🪨 Auto Boulder", CFrame.new(4188.75, 1019.85, -3905.19), "rep")
 
 -- 4. MYTHICAL GYM
-local MythicalFolder = GymTab:AddFolder(" 🫟 Mythical Gym")
+local MythicalFolder = GymTab:AddFolder(" 🔮 Mythical Gym")
 createFarm(MythicalFolder, "🏋️ Auto Lift", CFrame.new(2486.75, 31.91, 847.89), "rep")
 createFarm(MythicalFolder, "💪 Auto Bench Press", CFrame.new(2370.74, 57.09, 1243.37), "rep")
 createFarm(MythicalFolder, "Auto Boulder", CFrame.new(2667.31, 58.88, 1202.46), "rep")
@@ -2456,8 +2456,8 @@ local function claimChests()
         
         for _, pos in ipairs(chests) do
             root.CFrame = CFrame.new(pos)
-            task.wait(0.15) -- Sandığın dokunuşu algılaması için şart
-        end
+            task.wait(0.15) 
+		end
         root.CFrame = oldCF
     end
 end
@@ -2944,7 +2944,7 @@ teleport:AddButton("📍Spawn", function()
     humanoidRootPart.CFrame = CFrame.new(2, 8, 115)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Teletransporte",
+        Title = "Teleport",
         Text = "Teleported to Spawn",
         Duration = 0
     })
@@ -2957,7 +2957,7 @@ teleport:AddButton("📍Secret Area", function()
     humanoidRootPart.CFrame = CFrame.new(1947, 2, 6191)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Teletransporte",
+        Title = "Teleport",
         Text = "Teleported to Secret Area",
         Duration = 0
     })
@@ -2970,7 +2970,7 @@ teleport:AddButton("📍Tiny Island", function()
     humanoidRootPart.CFrame = CFrame.new(-34, 7, 1903)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Teletransporte",
+        Title = "Teleport",
         Text = "Teleported to Tiny Island",
         Duration = 0
     })
@@ -2983,7 +2983,7 @@ teleport:AddButton("📍Frozen Island", function()
     humanoidRootPart.CFrame = CFrame.new(- 2600.00244, 3.67686558, - 403.884369, 0.0873617008, 1.0482899e-09, 0.99617666, 3.07204253e-08, 1, - 3.7464023e-09, - 0.99617666, 3.09302628e-08, 0.0873617008)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Teletransporte",
+        Title = "Teleport",
         Text = "Teleported to Frozen Island",
         Duration = 0
     })
@@ -2996,7 +2996,7 @@ teleport:AddButton("📍Mythical Island", function()
     humanoidRootPart.CFrame = CFrame.new(2255, 7, 1071)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Teletransporte",
+        Title = "Teleport",
         Text = "Teleported to Mythical Island",
         Duration = 0
     })
@@ -3009,7 +3009,7 @@ teleport:AddButton("📍Hell Island", function()
     humanoidRootPart.CFrame = CFrame.new(-6768, 7, -1287)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Teletransporte",
+        Title = "Teleport",
         Text = "Teleported to Hell Island",
         Duration = 0
     })
@@ -3022,7 +3022,7 @@ teleport:AddButton("📍Legend Island", function()
     humanoidRootPart.CFrame = CFrame.new(4604, 991, -3887)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Teletransporte",
+        Title = "Teleport",
         Text = "Teleported to Legend Island",
         Duration = 0
     })
@@ -3035,7 +3035,7 @@ teleport:AddButton("📍Muscle King Island", function()
     humanoidRootPart.CFrame = CFrame.new(-8646, 17, -5738)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Teletransporte",
+        Title = "Teleport",
         Text = "Teleported to Muscle King",
         Duration = 0
     })
@@ -3048,7 +3048,7 @@ teleport:AddButton("📍Jungle Island", function()
     humanoidRootPart.CFrame = CFrame.new(-8659, 6, 2384)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Teletransporte",
+        Title = "Teleport",
         Text = "Teleported to Jungle Island",
         Duration = 0
     })
@@ -3061,7 +3061,7 @@ teleport:AddButton("📍Brawl Lava", function()
     humanoidRootPart.CFrame = CFrame.new(4471, 119, -8836)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Teletransporte",
+        Title = "Teleport",
         Text = "Teleported to Brawl Lava",
         Duration = 0
     })
@@ -3074,7 +3074,7 @@ teleport:AddButton("📍Brawl Desert", function()
     humanoidRootPart.CFrame = CFrame.new(960, 17, -7398)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Teletransporte",
+        Title = "Teleport",
         Text = "Teleported to Brawl Desert",
         Duration = 0
     })
@@ -3087,7 +3087,7 @@ teleport:AddButton("📍Brawl Regular", function()
     humanoidRootPart.CFrame = CFrame.new(-1849, 20, -6335)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Teletransporte",
+        Title = "Teleport",
         Text = "Teleported to Brawl Regular",
         Duration = 0
     })
