@@ -1,4 +1,4 @@
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/SynioxStudios/ByYusufGui-Syniox/refs/heads/main/SynioxGui.lua%20(3).txt", true))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/SynioxStudios/ByYusufGui-Syniox/refs/heads/main/SynioxGui.txt", true))()
 local displayName = game.Players.LocalPlayer.DisplayName
 
 local window = library:AddWindow("Syniox Public | Muscle Legends || HELLO - ".. displayName, {
@@ -2421,13 +2421,13 @@ local LegendsFolder = GymTab:AddFolder(" 🌟 Legends Gym")
 createFarm(LegendsFolder, "🏋️ Auto Lift", CFrame.new(4532.02, 1025.80, -4002.15), "rep")
 createFarm(LegendsFolder, "💪 Auto Bench Press", CFrame.new(4109.20, 1035.67, -3802.88), "rep")
 createFarm(LegendsFolder, "🦵 Auto Squat", CFrame.new(4438.74, 1021.38, -4058.46), "rep")
-createFarm(LegendsFolder, "Auto Boulder", CFrame.new(4188.75, 1019.85, -3905.19), "rep")
+createFarm(LegendsFolder, "🪨 Auto Boulder", CFrame.new(4188.75, 1019.85, -3905.19), "rep")
 
 -- 4. MYTHICAL GYM
 local MythicalFolder = GymTab:AddFolder(" 🔮 Mythical Gym")
 createFarm(MythicalFolder, "🏋️ Auto Lift", CFrame.new(2486.75, 31.91, 847.89), "rep")
 createFarm(MythicalFolder, "💪 Auto Bench Press", CFrame.new(2370.74, 57.09, 1243.37), "rep")
-createFarm(MythicalFolder, "Auto Boulder", CFrame.new(2667.31, 58.88, 1202.46), "rep")
+createFarm(MythicalFolder, "🗿 Auto Boulder", CFrame.new(2667.31, 58.88, 1202.46), "rep")
 
 -- 5. FROST GYM
 local FrostFolder = GymTab:AddFolder(" ❄️ Frost Gym")
